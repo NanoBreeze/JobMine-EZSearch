@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Inquiry</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        textarea {
+        resize:none
+        }
+
+    </style>
+
+</head>
+<body>
+
+
+<div class="container">
+    <form class="form-group" action="submit" method="post">
+        <fieldset>
+            <legend>Search options</legend>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="customSearch">SQL</label><textarea rows="3" class="form-control" id="customSearch" name="customSearch" placeholder="SELECT * FROM somewhere WHERE language LIKE 'C'"></textarea>
+                </div>
+
+                <div class="col-md-5 col-md-offset-1">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Language/Technology <input type="text" class="form-control" name="languageTechnology" placeholder="C#, Oracle"></label>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Location<input type="text" class="form-control" name="location" placeholder="Toronto, China"></label>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Levels</label><br/>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="junior">Junior
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="intermediate">Intermediate
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="senior">Senior
+                            </label>
+                        </div></div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Discipline<input type="text" class="form-control" name="discipline" placeholder="ENG-Computer, ENG-Electrical"></label>
+
+                        </div>
+                        <div class="col-md-6">
+                            <label>Job Title<input type="text" class="form-control" name="jobTitle" placeholder="Developer"></label>
+
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Job ID<input type="text" class="form-control" name="jobId" placeholder="00282461"></label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Employer Name<input type="text" class="form-control" name="employerName" placeholder="Bombardier"></label
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-2 col-md-offset-1">
+                    <div class="row">
+                        <input type="submit" class="form-control" name="submit" value="Submit"/>
+                    </div>
+
+                    <div class="row">
+
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<div class="container">
+    <table class="table">
+        <caption>Search Results</caption>
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Level</th>
+                <th>Employer Name</th>
+                <th>Location</th>
+                <th>Openings</th>
+                <th>Short List</th>
+                <th>Language</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for job in jobs %}
+        <tr>
+            <td> {{ job['job_title'] }} </td>
+            <td> {{ job['level'] }} </td>
+            <td> {{ job['employer_name'] }} </td>
+            <td> {{ job['location'] }} </td>
+            <td> {{ job['number_of_openings'] }} </td>
+            <td> {{ job['shortlist'] }} </td>
+            <td> {{ job['language'] }} </td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+        <tfoot>
+        <tr><td>This is the footer</td></tr>
+        </tfoot>
+    </table>
+</div>
+
+{# sdfsdfdsfsdf
+#: <canvas id="countries" width="600" height="400"></canvas>
+#}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<script>
+var pieData = [
+	{
+		value: 20,
+		color:"#878BB6"
+	},
+	{
+		value : 40,
+		color : "#4ACAB4"
+	},
+	{
+		value : 10,
+		color : "#FF8153"
+	},
+	{
+		value : 30,
+		color : "#FFEA88"
+	}
+];
+
+var pieOptions = {
+	segmentShowStroke : false,
+	animateScale : true
+}
+
+var countries= document.getElementById("countries").getContext("2d");
+new Chart(countries).Pie(pieData, pieOptions);
+</script>
+</body>
+</html>

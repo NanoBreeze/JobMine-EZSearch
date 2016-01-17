@@ -13,6 +13,8 @@
 
 </head>
 <body>
+
+
 <div class="jumbotron">
     <h1 class="text-center">Welcome to JobMine EZSearch
         <br />
@@ -45,21 +47,19 @@
         </form>
     </div>
 
-    {# <form action="" method="post" class="form-group">
-    <input type="text" class="form-control" placeholder="Username" name="username" value="{{
-          request.form.username }}">
-    <input type="password" class="form-control" placeholder="Password" name="password" value="{{
-          request.form.password }}">
-    <input class="btn btn-default" type="submit" value="Login">
-</form>
-    #}
+
+
 </div>
 <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="350">
   <ul class="nav navbar-nav">
-    <li class="active"><a href="#">Basic Topnav</a></li>
-    <li><a href="#">Page 1</a></li>
-    <li><a href="#">Page 2</a></li>
-    <li><a href="#">Page 3</a></li>
+    <li class="active"><a href="#">Why Use EZSearch?</a></li>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">"F"AQ</a></li>
+
+      </ul>
+    <ul class="nav navbar-nav navbar-right">
+    <li><a href="#">Source code</a></li>
+    <li><a href="#">Feedback</a></li>
   </ul>
 </nav>
 <br />
@@ -123,9 +123,38 @@ oij<br />
 <br />
 <br />
 dsf
-
+<canvas id="countries" width="600" height="400"></canvas>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<script>
+var pieData = [
+	{
+		value: 20,
+		color:"#878BB6"
+	},
+	{
+		value : 40,
+		color : "#4ACAB4"
+	},
+	{
+		value : 10,
+		color : "#FF8153"
+	},
+	{
+		value : 30,
+		color : "#FFEA88"
+	}
+];
+
+var pieOptions = {
+	segmentShowStroke : false,
+	animateScale : true
+}
+
+var countries= document.getElementById("countries").getContext("2d");
+new Chart(countries).Pie(pieData, pieOptions);
+</script>
 </body>
 </html>
