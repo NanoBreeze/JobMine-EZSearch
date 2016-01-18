@@ -1,8 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-
-import re
-
 import sqlite3
 
 connection=sqlite3.connect("jobs.db")
