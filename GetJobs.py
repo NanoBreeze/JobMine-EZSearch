@@ -82,6 +82,7 @@ while next_page_exists == True:
 
         summary = summary.replace(r'\r', '')
         summary = summary.replace(r'\t', '')
+        '''
         summary = summary.replace('&nbsp;','')
 
         #change upsidedown question mark with a single quote
@@ -101,7 +102,7 @@ while next_page_exists == True:
 
         #maintain line breaks
         summary = summary.replace(r'<br />', '\n')
-
+        '''
         print(summary)
         c.execute("INSERT INTO AllJobs(job_identifier, job_title, employer_name, unit_name, location, number_of_openings, discipline, level, hiring_support, work_term_support, comments, summary) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
                                        (job_identifier, job_title, employer_name, unit_name, location, number_of_openings, discipline, level, hiring_support, work_term_support, comments, summary,))
