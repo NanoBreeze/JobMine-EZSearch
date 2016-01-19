@@ -126,14 +126,59 @@ def submit():
 
 
 @app.route('/analyticsExport')
-def analytics_and_export():
+def analytics_export():
+
+    filter_words = {'sql_query': '',
+                    'job_identifier': '',
+                    'summary': '',
+                    'location' : '',
+                    'discipline' : '',
+                    'job_title': '',
+                    'employer_name' : '',
+                    'languages' : '',
+                    'junior' : '',
+                    'intermediate' : '',
+                    'senior': ''}
+
+    jobs = []
+
+    #return render_template("JobInquiry.html", jobs = jobs, filter_words = filter_words)
 
     #gets analytics on the number of jobs in cities
     analytics_city_count = filterJobs.analytics_city_count()
+    print("analytics_city_count" + str(analytics_city_count))
+
+    #gets analytics on the number of pre-set programming languages
+    analytics_languages_count = filterJobs.analytics_language_count()
+    print("analytics_languages_count" + str(analytics_languages_count))
+
+    #gest analytics on the number of jobs per faculty
+    analytics_faculties_count = filterJobs.analytics_faculty_count()
+    print("analytics_faculties_count" + str(analytics_faculties_count))
+
+    #gets analytics on the number of jobs per level
+    analytics_levels_count = filterJobs.analytics_level_count()
+    print("analytics_levels_count" + str(analytics_levels_count))
+
+    #gets analytics on the total number of jobs, unique employers, and unique locations
+    analytics_total_numbers_count = filterJobs.analytics_total_numbers()
+    print("analytics_total_numbers_count" + str(analytics_total_numbers_count))
+
+    #gets analytics on number of jobs that contain keywords
+    analytics_job_containing_keywords_count = filterJobs.analytics_jobs_containing_keywords_count()
+    print("analytics_job_containing_keywords_count" + str(analytics_job_containing_keywords_count))
 
 
 
-    return render_template("AnalyticsExport.html", analytics_city_count = analytics_city_count)
+    return render_template("AnalyticsExport.html",
+                           analytics_city_count = analytics_city_count,
+                           analytics_languages_count = analytics_languages_count,
+                           analytics_faculties_count = analytics_faculties_count,
+                           analytics_levels_count = analytics_levels_count,
+                           analytics_total_numbers_count = analytics_total_numbers_count,
+                           analytics_job_containing_keywords_count = analytics_job_containing_keywords_count
+                           )
+
 
 
 #the prioritization of the languages have changed so we must change the database column as well

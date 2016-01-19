@@ -2,11 +2,20 @@
 {% extends "TemplateLayout.html" %}
 {% block body %}
 
+<a href="jobInquiry" target="_blank">HEY, click here</a>
+
+<p><b>Total number of jobs: </b> <span>{{analytics_total_numbers_count[0]['total_jobs']}}</span></p>
+<p><b>Total number of unique locations: </b> <span>{{analytics_total_numbers_count[1]['total_unique_location']}}</span></p>
+<p><b>Total number of unique employers: </b> <span>{{analytics_total_numbers_count[2]['total_unique_employer']}}</span></p>
+
+
 <canvas id="countries" width="600" height="400"></canvas>
-
+<canvas id="city" width="600" height="400"></canvas>
+<canvas id="language" width="600" height="400"></canvas>
+<canvas id="faculty" width="600" height="400"></canvas>
+<canvas id="level" width="600" height="400"></canvas>
+<canvas id="keywords" width="600" height="400"></canvas>
 {% endblock %}
-
-
 
 
 
@@ -17,32 +26,237 @@
 
 <script type="text/javascript">
 
+var x = [];
+var y = [];
 
-var pieData = [
-	{
-		value: 20,
-		color:"#878BB6"
-	},
-	{
-		value : 40,
-		color : "#4ACAB4"
-	},
-	{
-		value : 10,
-		color : "#FF8153"
-	},
-	{
-		value : 30,
-		color : "#FFEA88"
-	}
-];
-var pieOptions = {
-	segmentShowStroke : false,
-	animateScale : true
-}
-var countries= document.getElementById("countries").getContext("2d");
-new Chart(countries).Pie(pieData, pieOptions);
+//jobs per city, doughnut
+{% for city in analytics_city_count %}
+    console.log(city);
+    x.push('{{city['location1']}}');
+    y.push({{city['count']}});
+{% endfor %}
+
+console.log(x);
+
+var data = [
+    {
+        value: y[0],
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: x[0]
+    },
+    {
+        value: y[1],
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: x[1]
+    },
+    {
+        value: y[2],
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: x[2]
+    },
+        {
+        value: y[3],
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: x[3]
+    },
+    {
+        value: y[4],
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: x[4]
+    },
+    {
+        value: y[5],
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: x[5]
+    },
+        {
+        value: y[6],
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: x[6]
+    },
+    {
+        value: y[7],
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: x[7]
+    },
+    {
+        value: y[8],
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: x[8]
+    },
+        {
+        value: y[9],
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: x[9]
+    },
+    {
+        value: y[10],
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: x[10]
+    }
+]
+
+var city = document.getElementById("city").getContext("2d");
+new Chart(city).Doughnut(data);
+
+
+
+
+
+
+//jobs per language
+
+ x = [];
+ y = [];
+{% for language in analytics_languages_count %}
+    x.push('{{language['language']}}')
+    y.push({{language['count']}})
+{% endfor %}
+
+var data = {
+    labels: x,
+    datasets: [
+        {
+            label: "My First dataset",
+            fillColor: "rgba(220,220,220,0.5)",
+            strokeColor: "rgba(220,220,220,0.8)",
+            highlightFill: "rgba(220,220,220,0.75)",
+            highlightStroke: "rgba(220,220,220,1)",
+            data: y
+        }
+    ]
+};
+var ctx= document.getElementById("language").getContext("2d");
+var myBarChart = new Chart(ctx).Bar(data);
+
+
+
+//jobs per faculty, doughnut
+ x = [];
+ y = [];
+{% for fac in analytics_faculties_count %}
+    x.push('{{fac['faculty']}}')
+    y.push({{fac['count']}})
+{% endfor %}
+
+var data = [
+    {
+        value: y[0],
+        highlight:"#F7464A",
+        color: "red",
+        label: x[0]
+    },
+    {
+        value: y[1],
+        highlight: "#46BFBD",
+        color: "orange",
+        label: x[1]
+    },
+    {
+        value: y[2],
+        highlight: "#FDB45C",
+        color: "blue",
+        label: x[2]
+    },
+    {
+        value: y[3],
+        highlight: "#FDB45C",
+        color: "green",
+        label: x[3]
+    },
+    {
+        value: y[4],
+        highlight: "#FDB45C",
+        color: "yellow",
+        label: x[4]
+    },
+    {
+        value: y[5],
+        highlight: "#FDB45C",
+        color: "violet",
+        label: x[5]
+    }
+]
+
+
+
+var faculty = document.getElementById("faculty").getContext("2d");
+new Chart(faculty).Doughnut(data);
+
+
+
+
+//jobs per level, doughnut
+x = [];
+y = [];
+
+{% for level in analytics_levels_count %}
+    x.push('{{level['faculty']}}')
+    y.push({{level['count']}})
+{% endfor %}
+
+var data = [
+    {
+        value: y[0],
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: x[0]
+    },
+    {
+        value: y[1],
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: x[1]
+    },
+    {
+        value: y[2],
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: x[2]
+    }
+]
+
+var level = document.getElementById("level").getContext("2d");
+new Chart(level).Pie(data);
+
+
+
+//jobs per certain keywords
+x = [];
+y = [];
+
+{% for keyword in analytics_job_containing_keywords_count %}
+    x.push('{{keyword['job_title']}}')
+    y.push({{keyword['count']}})
+{% endfor %}
+
+var data = {
+    labels: x,
+    datasets: [
+        {
+            label: "My First dataset",
+            fillColor: "rgba(220,220,220,0.5)",
+            strokeColor: "rgba(220,220,220,0.8)",
+            highlightFill: "rgba(220,220,220,0.75)",
+            highlightStroke: "rgba(220,220,220,1)",
+            data: y
+        }
+    ]
+};
+var ctx= document.getElementById("keywords").getContext("2d");
+var myBarChart = new Chart(ctx).Bar(data);
+
+
 </script>
-
-
 {% endblock %}
