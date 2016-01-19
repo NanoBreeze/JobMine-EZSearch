@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Job Inquiry</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
 
     <style>
         textarea {
@@ -27,9 +22,9 @@
         }
     </style>
 
-</head>
-<body>
 
+{% extends "TemplateLayout.html" %}
+{% block body %}
 
 <div class="container">
     <form class="form-group" action="submit" method="post" id="fo">
@@ -43,7 +38,7 @@
                 <div class="col-md-5 col-md-offset-1">
                     <div class="row">
                         <div class="col-md-6">
-                            <label>Keywords<input type="text" class="form-control" name="summary" placeholder="C++, kind" value="{{ filter_words['summary'] }}"></label>
+                            <label>Keywords<input type="text" class="form-control" name="summary" placeholder="game, fun" value="{{ filter_words['summary'] }}"></label>
                         </div>
                         <div class="col-md-6">
                             <label>Location<input type="text" class="form-control" name="location" placeholder="Toronto, China" value="{{ filter_words['location'] }}"></label>
@@ -79,11 +74,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label>Discipline<input type="text" class="form-control" name="discipline" placeholder="ENG-Computer, ENG-Electrical" value="{{ filter_words['discipline'] }}"></label>
-
                         </div>
                         <div class="col-md-6">
                             <label>Job Title<input type="text" class="form-control" name="job_title" placeholder="Developer" value="{{ filter_words['job_title'] }}"></label>
-
                         </div>
                     </div>
                     <br />
@@ -94,6 +87,12 @@
 
                         <div class="col-md-6">
                             <label>Employer Name<input type="text" class="form-control" name="employer_name" placeholder="Bombardier" value="{{ filter_words['employer_name'] }}"></label>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Language<input type="text" class="form-control" name="languages" placeholder="C, C++" value="{{ filter_words['languages'] }}"></label>
                         </div>
                     </div>
                 </div>
@@ -108,8 +107,6 @@
     </form>
 </div>
 
-
-
 <div class="container">
     <table class="table">
         <caption>Search Results</caption>
@@ -121,7 +118,7 @@
             <th>Location</th>
             <th>Openings</th>
             <th>Short List</th>
-            <th>Languages</th>
+            <th>Languages<button type="button" class="glyphicon glyphicon-plus" onclick="openModal()"></button></th>
         </tr>
         </thead>
         <tbody>
@@ -146,6 +143,9 @@
                             <p><b>Disciplines:</b> <br />{{job['discipline']}}</p>
                             <p><b>Hiring Support:</b> <br />{{job['hiring_support']}}</p>
                             <p><b>Work Term Support:</b> <br />{{job['work_term_support']}}</p>
+                            <p><b>Apply:</b> <br />{{job['apply']}}</p>
+                            <p><b>Last Day to apply:</b> <br />{{job['last_day_to_apply']}}</p>
+
                         </div>
                         <div class="col-md-10">
                             {{job['summary']|safe}}<br><br> <p><b>Comments:</b>{{job['comments']}}</p>
@@ -164,15 +164,58 @@
     </table>
 </div>
 
+{# We use ajax to deliver the prioritized languages because form submission forces a reply and I don't want to reload entire page only to submit languages#}
+<div class="modal" id="language_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">Prioritize your languages</span><button type="button" class="btn btn-default" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Prioritize languages (can separate languages with a ",") :
+                    <input type="text" id="prioritize_language" />
+                 </label>
+                <button type="button" class="btn btn-default" onclick="prioritize_language()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
 {# sdfsdfdsfsdf
 #: <canvas id="countries" width="600" height="400"></canvas>
 #}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-<script>
+{% block scripts %}
+
+<script type="text/javascript">
+
+function openModal() {
+    console.log('hey');
+    $('#language_modal').modal({
+        show: true,
+        backdrop: false,
+        keyboard:true
+    });
+}
+
+function prioritize_language() {
+
+    user_languages_list = document.getElementById('prioritize_language').value;
+    data = { 'user_languages_list' : user_languages_list }
+
+    $.ajax({
+        type : "POST",
+        url : "/update_languages",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8'
+    });
+
+
+}
 
 function submitWithOrderBy(orderByParameter){
     console.log("HEY");
@@ -206,5 +249,6 @@ var pieOptions = {
 var countries= document.getElementById("countries").getContext("2d");
 new Chart(countries).Pie(pieData, pieOptions);
 </script>
-</body>
-</html>
+
+
+{% endblock %}

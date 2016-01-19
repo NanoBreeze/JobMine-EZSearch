@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import filterJobs
+import populateLanguage
 
 app = Flask(__name__)
 
@@ -18,11 +19,12 @@ def job_inquiry():
                     'discipline' : '',
                     'job_title': '',
                     'employer_name' : '',
+                    'languages' : '',
                     'junior' : '',
                     'intermediate' : '',
                     'senior': ''}
 
-    jobs = filterJobs.give_all_jobs()
+    jobs = []
     return render_template("JobInquiry.html", jobs = jobs, filter_words = filter_words)
 
 #receives all search filters user posts from Job Inquiry
@@ -39,6 +41,7 @@ def submit():
                     'discipline' : request.form['discipline'],
                     'job_title': request.form['job_title'],
                     'employer_name' : request.form['employer_name'],
+                    'languages' : request.form['languages']
                     }
 
     print(filter_words)
@@ -76,7 +79,6 @@ def submit():
 
         query += "(level LIKE '%" + filter_words['junior'] + "%' OR level LIKE '%" + filter_words['intermediate'] + "%' OR level LIKE '%" + filter_words['senior'] + "%')"
 
-
         #contains the other filters
         filters = [
             {'column_name': 'job_identifier', 'value': filter_words['job_identifier'].split(',')},
@@ -84,7 +86,9 @@ def submit():
             {'column_name': 'location', 'value': filter_words['location'].split(',')},
             {'column_name': 'discipline', 'value':filter_words['discipline'].split(',')},
             {'column_name': 'job_title', 'value':filter_words['job_title'].split(',')},
-            {'column_name': 'employer_name', 'value':filter_words['employer_name'].split(',')}
+            {'column_name': 'employer_name', 'value':filter_words['employer_name'].split(',')},
+            #languages contain the special case of matching C, which shall be matched by C, and ,C
+            {'column_name': 'languages', 'value':filter_words['languages'].split(',')}
         ]
 
         #if the value for that filter doesn't exist, then user doesn't want to filter that value so do nothing with that filter.
@@ -106,13 +110,47 @@ def submit():
                     if val == filter['value'][0]:
                         query += filter['column_name'] + " LIKE '%" + val + "%'"
                     else:
-                        query += " OR " + filter['column_name'] + " LIKE '%" + val + "%'"
+                        #special matching if we're filtering languages and the language is C
+                        if (filter['column_name'] == 'languages'):
+                            query += " OR languages LIKE '%C,%' OR languages LIKE '%,C%'"
+                        else:
+                            query += " OR " + filter['column_name'] + " LIKE '%" + val + "%'"
                 query += ")"
 
     print(query)
     jobs = filterJobs.filter_by_SQL(query)
 
     return render_template("JobInquiry.html", jobs = jobs, filter_words = filter_words)
+
+
+
+
+@app.route('/analyticsExport')
+def analytics_and_export():
+
+    #gets analytics on the number of jobs in cities
+    analytics_city_count = filterJobs.analytics_city_count()
+
+
+
+    return render_template("AnalyticsExport.html", analytics_city_count = analytics_city_count)
+
+
+#the prioritization of the languages have changed so we must change the database column as well
+@app.route('/update_languages', methods=['POST'])
+def update_languages():
+
+    user_languages_list = request.json['user_languages_list'].split(',')
+
+    #languages have no spaces in their strings and we remove empty strings
+    user_languages_list = [x.strip() for x in user_languages_list]
+
+    while '' in user_languages_list:
+        user_languages_list.remove('')
+
+
+    populateLanguage.populate(user_languages_list)
+    return jsonify(a = 'nothing')
 
 # start the server with the 'run()' method
 if __name__ == '__main__':
