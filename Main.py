@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, jsonify
+import csv
+import json
 import filterJobs
 import populateLanguage
 
@@ -124,7 +126,7 @@ def submit():
 
 
 
-
+#displays the Analytics and Exports page
 @app.route('/analyticsExport')
 def analytics_export():
 
@@ -180,6 +182,123 @@ def analytics_export():
                            )
 
 
+#displays all jobs
+@app.route('/exportHtml/<int:offset>')
+def export_html(offset):
+
+    jobs = filterJobs.get_jobs_for_HTML_export(offset)
+
+    for job in jobs:
+
+        job['discipline'] = [x.strip() for x in job['discipline'].split(',')]
+        job['level'] = [x.strip() for x in job['level'].split(',')]
+
+        #we strip the comments of trailing whitespaces to more easily check on client whether to display the comment tag.
+        job['comments'] = job['comments'].strip()
+
+    return render_template("ExportHTML.html", jobs = jobs)
+
+#makes a csv file with all job details
+@app.route('/exportCsv')
+def export_csv():
+
+    jobs = filterJobs.give_all_jobs()
+
+
+    with open('jobs_EZSearch.csv', 'w') as csv_file:
+        #the } is the rarest delimiter I can find.
+        writer = csv.writer(csv_file, delimiter=",")
+        writer.writerow(['job_identifier','job_title','employer_name','unit_name','location',
+                         'number_of_openings', 'level', 'discipline', 'hiring_support',
+                         'work_term_support', 'comments', 'summary'])
+
+        for job in jobs:
+            writer.writerow(job)
+    return jsonify(a = 'nothing')
+
+#makes a txt file with all job details
+@app.route('/exportTxt')
+def export_txt():
+
+    jobs = filterJobs.give_all_jobs()
+
+    writer = open('jobs_EZSearch.txt','w')
+
+    for job in jobs:
+        writer.write('\n')
+        writer.write('job_identifier:')
+        writer.write(job[0])
+        writer.write('\n')
+
+        writer.write('job_title:')
+        writer.write(job[1])
+        writer.write('\n')
+
+        writer.write('employer_name:')
+        writer.write(job[2])
+        writer.write('\n')
+
+        writer.write('unit_name:')
+        writer.write(job[3])
+        writer.write('\n')
+
+        writer.write('location:')
+        writer.write(job[4])
+        writer.write('\n')
+
+        writer.write('number_of_openings:')
+        writer.write(job[5])
+        writer.write('\n')
+
+        writer.write('level:')
+        writer.write(job[6])
+        writer.write('\n')
+
+        writer.write('discipline:')
+        writer.write(job[7])
+        writer.write('\n')
+
+        writer.write('hiring_support:')
+        writer.write(job[8])
+        writer.write('\n')
+
+        writer.write('work_term_support:')
+        writer.write(job[9])
+        writer.write('\n')
+
+        writer.write('comments:')
+        writer.write(job[10])
+        writer.write('\n')
+
+        writer.write('summary:')
+        writer.write(job[11])
+        writer.write('\n')
+        writer.write('==================================================')
+
+    writer.close()
+
+    return jsonify(a = 'nothing')
+
+#makes a json file with details associated to every job
+@app.route('/exportJson')
+def export_json():
+
+    jobs = filterJobs.give_all_jobs()
+
+    jobs_json = {}
+
+    for i in range(len(jobs)):
+        jobs_json['job'+str(i)] = {'job_identifier': jobs[i][0], 'job_title': jobs[i][1], 'employer_name':jobs[i][2],
+                                   'unit_name': jobs[i][3], 'location': jobs[i][4], 'number_of_openings': jobs[i][5],
+                                   'level': jobs[i][6], 'discipline': jobs[i][7], 'hiring_support':jobs[i][8],
+                                    'work_term_support': jobs[i][9], 'comments':jobs[i][10], 'summary':jobs[i][11]}
+
+
+    json_file = open('jobs_EZSearch.json','w')
+
+    json.dump(jobs_json, json_file, indent=4)
+
+    return jsonify(a = 'nonthing')
 
 #the prioritization of the languages have changed so we must change the database column as well
 @app.route('/update_languages', methods=['POST'])

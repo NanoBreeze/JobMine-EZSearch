@@ -1,14 +1,25 @@
 import sqlite3
 
 
-#return the relevant tabular info related to every job
+#returns all data related to each job. Intended for exportCsv so we return a list of lists
 def give_all_jobs():
     connection=sqlite3.connect("jobs.db")
     cur = connection.execute('SELECT * FROM AllJobs')
     jobs = []
 
     for row in cur.fetchall():
-        jobs.append({'job_title': row[1],'level': row[6], 'employer_name': row[2], 'location': row[4], 'number_of_openings':row[5], 'shortlist': 'TO DO: ADD SHORT LIST', 'languages' : row[12]  })
+        '''
+        jobs.append({'job_identifier': row[0], 'job_title':row[1], 'employer_name':row[2],'unit_name':row[3], 'location':row[4],
+                     'number_of_openings':row[5], 'level':row[6], 'discipline':row[7], 'hiring_support':row[8],
+                     'work_term_support':row[9], 'comments':row[10], 'summary':row[11]})
+        '''
+
+        jobs.append([str(row[0]),str(row[1]),str(row[2]),str(row[3]),
+                     str(row[4]),
+                     str(row[5]),
+                     str(row[6]),
+                     str(row[7]),
+                     str(row[8]),str(row[9]),str(row[10]),str(row[11])])
 
     connection.close()
     return jobs
@@ -27,6 +38,19 @@ def filter_by_SQL(query):
 
     connection.close()
 
+    return jobs
+
+
+#returns information relevant for each job for HTML export
+def get_jobs_for_HTML_export(offset = 0, limit = 1000):
+    connection=sqlite3.connect("jobs.db")
+    cur = connection.execute('SELECT employer_name, job_title, number_of_openings, location, level, discipline, summary, comments FROM AllJobs LIMIT ' + str(limit) + ' OFFSET ' + str(offset))
+    jobs = []
+
+    for row in cur.fetchall():
+        jobs.append({'employer_name': row[0],'job_title': row[1], 'number_of_openings': row[2], 'location': row[3], 'level':row[4], 'discipline': row[5], 'summary':row[6], 'comments':row[7] })
+
+    connection.close()
     return jobs
 
 #returns a list of the number of jobs that contain one of 10 pre-set languages. This is very bad SQL but it works and I'm not sure what the optimized SQL looks like

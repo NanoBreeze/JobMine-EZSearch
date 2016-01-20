@@ -2,19 +2,98 @@
 {% extends "TemplateLayout.html" %}
 {% block body %}
 
-<a href="jobInquiry" target="_blank">HEY, click here</a>
+<style>
 
-<p><b>Total number of jobs: </b> <span>{{analytics_total_numbers_count[0]['total_jobs']}}</span></p>
-<p><b>Total number of unique locations: </b> <span>{{analytics_total_numbers_count[1]['total_unique_location']}}</span></p>
-<p><b>Total number of unique employers: </b> <span>{{analytics_total_numbers_count[2]['total_unique_employer']}}</span></p>
+    .chart-legend li {
+    list-style-type: none;
+    }
+
+    .chart-legend li span{
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    }
+</style>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Analytics</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="text-center"><sup>Jobs</sup>/<sub>Programming Language</sub></h2>
+            <canvas id="language" width="100%" height="50%"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h2 class="text-center"><sup>Jobs</sup>/<sub>Keyword in Job Title</sub></h2>
+            <canvas id="keywords" width="100%" height="50%"></canvas>
+        </div>
+    </div>
+    <br /><br />
+    <div class="row">
+        <div class="col-md-4">
+            <h2 class="text-center"><sup>Jobs</sup>/<sub>Faculty</sub></h2>
+            <canvas id="myChart" width="80%" height="80%"></canvas>
+            <div id="js-legend" class="chart-legend"></div>
+        </div>
+        <div class="col-md-4">
+            <h2 class="text-center"><sup>Jobs</sup>/<sub>City</sub></h2>
+            <canvas id="myChart2" width="80%" height="80%"></canvas>
+            <div id="js-legend2" class="chart-legend"></div>
+        </div>
+        <div class="col-md-4">
+            <h2 class="text-center"><sup>Jobs</sup>/<sub>Level</sub></h2>
+            <canvas id="myChart3" width="80%" height="80%"></canvas>
+            <div id="js-legend3" class="chart-legend"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">J</span>obs:<span>
+        <h3 style="display:inline; "><span class="label label-success" style="background-color:black; color:yellow">
+        {{analytics_total_numbers_count[0]['total_jobs']}}
+    </span></h3>
+    </span></h4>
+        </div>
+
+            <div class="col-md-4">
+            <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">U</span>nique <span class="lead">L</span>ocations:<span>
+         <h3 style="display:inline; "><span class="label label-success" style="background-color:black; color:yellow">
+        {{analytics_total_numbers_count[1]['total_unique_location']}}
+            </span></h3>
+           </span></h4>
+        </div>
+
+            <div class="col-md-4">
+            <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">U</span>nique <span class="lead">E</span>mployers: <span>
+            <h3 style="display:inline; "><span class="label label-success" style="background-color:black; color:yellow">
+            {{analytics_total_numbers_count[2]['total_unique_employer']}}
+            </span></h3>
+           </span></h4>
+        </div>
+    </div>
+</div>
+
+
+
+
+<a href="/exportHtml/0" target="_blank">1 - 1000 jobs</a>
+<a href="/exportHtml/1000" target="_blank">1001 - 2000 jobs</a>
+<a href="/exportHtml/2000" target="_blank">2001 - 3000 jobs</a>
+<a href="/exportHtml/3000" target="_blank">3001 - 4000 jobs</a>
+
+<a href="/exportCsv" target="_blank">Export CSV</a>
+<a href="/exportTxt" target="_blank">Export TXT</a>
+<a href="/exportJson" target="_blank">Export JSON</a>
+
 
 
 <canvas id="countries" width="600" height="400"></canvas>
 <canvas id="city" width="600" height="400"></canvas>
-<canvas id="language" width="600" height="400"></canvas>
 <canvas id="faculty" width="600" height="400"></canvas>
 <canvas id="level" width="600" height="400"></canvas>
-<canvas id="keywords" width="600" height="400"></canvas>
 {% endblock %}
 
 
@@ -26,97 +105,8 @@
 
 <script type="text/javascript">
 
-var x = [];
-var y = [];
-
-//jobs per city, doughnut
-{% for city in analytics_city_count %}
-    console.log(city);
-    x.push('{{city['location1']}}');
-    y.push({{city['count']}});
-{% endfor %}
-
-console.log(x);
-
-var data = [
-    {
-        value: y[0],
-        color:"#F7464A",
-        highlight: "#FF5A5E",
-        label: x[0]
-    },
-    {
-        value: y[1],
-        color: "#46BFBD",
-        highlight: "#5AD3D1",
-        label: x[1]
-    },
-    {
-        value: y[2],
-        color: "#FDB45C",
-        highlight: "#FFC870",
-        label: x[2]
-    },
-        {
-        value: y[3],
-        color:"#F7464A",
-        highlight: "#FF5A5E",
-        label: x[3]
-    },
-    {
-        value: y[4],
-        color: "#46BFBD",
-        highlight: "#5AD3D1",
-        label: x[4]
-    },
-    {
-        value: y[5],
-        color: "#FDB45C",
-        highlight: "#FFC870",
-        label: x[5]
-    },
-        {
-        value: y[6],
-        color:"#F7464A",
-        highlight: "#FF5A5E",
-        label: x[6]
-    },
-    {
-        value: y[7],
-        color: "#46BFBD",
-        highlight: "#5AD3D1",
-        label: x[7]
-    },
-    {
-        value: y[8],
-        color: "#FDB45C",
-        highlight: "#FFC870",
-        label: x[8]
-    },
-        {
-        value: y[9],
-        color:"#F7464A",
-        highlight: "#FF5A5E",
-        label: x[9]
-    },
-    {
-        value: y[10],
-        color: "#46BFBD",
-        highlight: "#5AD3D1",
-        label: x[10]
-    }
-]
-
-var city = document.getElementById("city").getContext("2d");
-new Chart(city).Doughnut(data);
-
-
-
-
-
 
 //jobs per language
-
  x = [];
  y = [];
 {% for language in analytics_languages_count %}
@@ -138,97 +128,10 @@ var data = {
     ]
 };
 var ctx= document.getElementById("language").getContext("2d");
-var myBarChart = new Chart(ctx).Bar(data);
+var myBarChart = new Chart(ctx).Bar(data, {responsive: true} );
 
 
 
-//jobs per faculty, doughnut
- x = [];
- y = [];
-{% for fac in analytics_faculties_count %}
-    x.push('{{fac['faculty']}}')
-    y.push({{fac['count']}})
-{% endfor %}
-
-var data = [
-    {
-        value: y[0],
-        highlight:"#F7464A",
-        color: "red",
-        label: x[0]
-    },
-    {
-        value: y[1],
-        highlight: "#46BFBD",
-        color: "orange",
-        label: x[1]
-    },
-    {
-        value: y[2],
-        highlight: "#FDB45C",
-        color: "blue",
-        label: x[2]
-    },
-    {
-        value: y[3],
-        highlight: "#FDB45C",
-        color: "green",
-        label: x[3]
-    },
-    {
-        value: y[4],
-        highlight: "#FDB45C",
-        color: "yellow",
-        label: x[4]
-    },
-    {
-        value: y[5],
-        highlight: "#FDB45C",
-        color: "violet",
-        label: x[5]
-    }
-]
-
-
-
-var faculty = document.getElementById("faculty").getContext("2d");
-new Chart(faculty).Doughnut(data);
-
-
-
-
-//jobs per level, doughnut
-x = [];
-y = [];
-
-{% for level in analytics_levels_count %}
-    x.push('{{level['faculty']}}')
-    y.push({{level['count']}})
-{% endfor %}
-
-var data = [
-    {
-        value: y[0],
-        color:"#F7464A",
-        highlight: "#FF5A5E",
-        label: x[0]
-    },
-    {
-        value: y[1],
-        color: "#46BFBD",
-        highlight: "#5AD3D1",
-        label: x[1]
-    },
-    {
-        value: y[2],
-        color: "#FDB45C",
-        highlight: "#FFC870",
-        label: x[2]
-    }
-]
-
-var level = document.getElementById("level").getContext("2d");
-new Chart(level).Pie(data);
 
 
 
@@ -255,7 +158,220 @@ var data = {
     ]
 };
 var ctx= document.getElementById("keywords").getContext("2d");
-var myBarChart = new Chart(ctx).Bar(data);
+var myBarChart = new Chart(ctx).Bar(data, {responsive: true});
+
+
+
+//jobs per faculty, doughnut
+ x = [];
+ y = [];
+{% for fac in analytics_faculties_count %}
+    x.push('{{fac['faculty']}}')
+    y.push({{fac['count']}})
+{% endfor %}
+
+var data = [
+    {
+        value: y[0],
+        highlight:"#009AA6",
+        color: "#007F8A",
+        label: x[0]
+    },
+    {
+        value: y[1],
+        highlight: "#E98300",
+        color: "#AC6100",
+        label: x[1]
+    },
+    {
+        value: y[2],
+        highlight: "#CCAAFF",
+        color: "#57068C",
+        label: x[2]
+    },
+    {
+        value: y[3],
+        highlight: "#B6BF00",
+        color: "#747800",
+        label: x[3]
+    },
+    {
+        value: y[4],
+        highlight: "#FF88DD",
+        color: "#E0249A",
+        label: x[4]
+    },
+    {
+        value: y[5],
+        highlight: "#77BBFF",
+        color: "#0073CF",
+        label: x[5]
+    }
+]
+
+var options = {
+    responsive: true,
+    tooltipTemplate: "<%= label %>:<%= value %>"
+}
+
+var ctx = document.getElementById("myChart").getContext("2d");
+
+var myChart = new Chart(ctx).Doughnut(data, options);
+
+document.getElementById('js-legend').innerHTML = myChart.generateLegend();
+
+
+/*
+var faculty = document.getElementById("faculty").getContext("2d");
+new Chart(faculty).Doughnut(data);
+*/
+
+
+
+
+
+
+//jobs per city, doughnut
+var x = [];
+var y = [];
+
+{% for city in analytics_city_count %}
+    console.log(city);
+    x.push('{{city['location1']}}');
+    y.push({{city['count']}});
+{% endfor %}
+
+console.log(x);
+
+var data = [
+    {
+        value: y[0],
+        color:"red",
+        highlight: "#ff4d4d",
+        label: x[0]
+    },
+    {
+        value: y[1],
+        color: "darkorange",
+        highlight: "orange",
+        label: x[1]
+    },
+    {
+        value: y[2],
+        color: "yellow",
+        highlight: "#ffff4d",
+        label: x[2]
+    },
+        {
+        value: y[3],
+        color:"green",
+        highlight: "yellowgreen",
+        label: x[3]
+    },
+    {
+        value: y[4],
+        color: "blue",
+        highlight: "#1a1aff",
+        label: x[4]
+    },
+    {
+        value: y[5],
+        color: "brown",
+        highlight: "saddlebrown",
+        label: x[5]
+    },
+        {
+        value: y[6],
+        color:"violet",
+        highlight: "palevioletred",
+        label: x[6]
+    },
+    {
+        value: y[7],
+        color: "limegreen",
+        highlight: "lime",
+        label: x[7]
+    },
+    {
+        value: y[8],
+        color: "deeppink",
+        highlight: "pink",
+        label: x[8]
+    },
+        {
+        value: y[9],
+        color:"darkslategray",
+        highlight: "slategray",
+        label: x[9]
+    },
+    {
+        value: y[10],
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: x[10]
+    }
+]
+
+var ctx = document.getElementById("myChart2").getContext("2d");
+
+var myChart = new Chart(ctx).Doughnut(data, options);
+
+// Note - tooltipTemplate is for the string that shows in the tooltip
+
+// legendTemplate is if you want to generate an HTML legend for the chart and use somewhere else on the page
+
+// e.g:
+
+document.getElementById('js-legend2').innerHTML = myChart.generateLegend();
+
+
+
+
+
+//jobs per level, doughnut
+x = [];
+y = [];
+
+{% for level in analytics_levels_count %}
+    x.push('{{level['faculty']}}')
+    y.push({{level['count']}})
+{% endfor %}
+
+var data = [
+    {
+        value: y[0],
+        color:"#449d44",
+        highlight: "#5cb85c",
+        label: x[0]
+    },
+    {
+        value: y[1],
+        color: "#ec971f",
+        highlight: "#f0ad4e",
+        label: x[1]
+    },
+    {
+        value: y[2],
+        color: "#31b0d5",
+        highlight: "#5bc0de",
+        label: x[2]
+    }
+]
+
+
+
+var ctx = document.getElementById("myChart3").getContext("2d");
+
+var myChart = new Chart(ctx).Doughnut(data, options);
+
+document.getElementById('js-legend3').innerHTML = myChart.generateLegend();
+
+
+
+
+
+
+
 
 
 </script>
