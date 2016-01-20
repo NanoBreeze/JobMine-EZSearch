@@ -58,7 +58,7 @@
     </span></h4>
         </div>
 
-            <div class="col-md-4">
+        <div class="col-md-4">
             <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">U</span>nique <span class="lead">L</span>ocations:<span>
          <h3 style="display:inline; "><span class="label label-success" style="background-color:black; color:yellow">
         {{analytics_total_numbers_count[1]['total_unique_location']}}
@@ -66,7 +66,7 @@
            </span></h4>
         </div>
 
-            <div class="col-md-4">
+        <div class="col-md-4">
             <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">U</span>nique <span class="lead">E</span>mployers: <span>
             <h3 style="display:inline; "><span class="label label-success" style="background-color:black; color:yellow">
             {{analytics_total_numbers_count[2]['total_unique_employer']}}
@@ -74,26 +74,33 @@
            </span></h4>
         </div>
     </div>
+
+    <div class="page-header">
+        <h1>Exports</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h3>HTML</h3>
+            <a href="/exportHtml/0" target="_blank"> 1 - 1000 jobs</a>
+            <a href="/exportHtml/1000" target="_blank">1001 - 2000 jobs</a>
+            <a href="/exportHtml/2000" target="_blank">2001 - 3000 jobs</a>
+            <a href="/exportHtml/3000" target="_blank">3001 - 4000 jobs</a>
+        </div>
+        <div class="col-md-3">
+            <h3>CSV</h3>
+            <a href="/exportCsv" target="_blank">Export CSV</a>
+        </div>
+        <div class="col-md-3">
+            <h3>TXT</h3>
+            <a href="/exportTxt" target="_blank">Export TXT</a>
+        </div>
+        <div class="col-md-3">
+            <h3>JSON</h3>
+            <a href="/exportJson" target="_blank">Export JSON</a>
+        </div>
+    </div>
 </div>
 
-
-
-
-<a href="/exportHtml/0" target="_blank">1 - 1000 jobs</a>
-<a href="/exportHtml/1000" target="_blank">1001 - 2000 jobs</a>
-<a href="/exportHtml/2000" target="_blank">2001 - 3000 jobs</a>
-<a href="/exportHtml/3000" target="_blank">3001 - 4000 jobs</a>
-
-<a href="/exportCsv" target="_blank">Export CSV</a>
-<a href="/exportTxt" target="_blank">Export TXT</a>
-<a href="/exportJson" target="_blank">Export JSON</a>
-
-
-
-<canvas id="countries" width="600" height="400"></canvas>
-<canvas id="city" width="600" height="400"></canvas>
-<canvas id="faculty" width="600" height="400"></canvas>
-<canvas id="level" width="600" height="400"></canvas>
 {% endblock %}
 
 
@@ -236,7 +243,6 @@ var x = [];
 var y = [];
 
 {% for city in analytics_city_count %}
-    console.log(city);
     x.push('{{city['location1']}}');
     y.push({{city['count']}});
 {% endfor %}
@@ -312,15 +318,14 @@ var data = [
     }
 ]
 
+var options = {
+    responsive: true,
+    tooltipTemplate: "<%= label %>:<%= value %>"
+}
+
 var ctx = document.getElementById("myChart2").getContext("2d");
 
 var myChart = new Chart(ctx).Doughnut(data, options);
-
-// Note - tooltipTemplate is for the string that shows in the tooltip
-
-// legendTemplate is if you want to generate an HTML legend for the chart and use somewhere else on the page
-
-// e.g:
 
 document.getElementById('js-legend2').innerHTML = myChart.generateLegend();
 
@@ -358,6 +363,10 @@ var data = [
     }
 ]
 
+var options = {
+    responsive: true,
+    tooltipTemplate: "<%= label %>:<%= value %>"
+}
 
 
 var ctx = document.getElementById("myChart3").getContext("2d");

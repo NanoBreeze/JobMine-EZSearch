@@ -1,26 +1,26 @@
 
-    <style>
-        textarea {
-        resize:none
-        }
+<style>
+    textarea {
+    resize:none
+    }
 
-        tr.jobHeader {
-        background-color: slategray;
-        }
+    tr.jobHeader {
+    background-color: slategray;
+    }
 
-        tr.jobHeader td {
-        color: white;
-        }
+    tr.jobHeader td {
+    color: white;
+    }
 
-        tr.jobHeader:hover {
-        background-color: gray;
-        color:yellow;
-        }
+    tr.jobHeader:hover {
+    background-color: gray;
+    color:yellow;
+    }
 
-        tr.jobHeader:hover td {
-        background-color: transparent; /* or #000 */
-        }
-    </style>
+    tr.jobHeader:hover td {
+    background-color: transparent; /* or #000 */
+    }
+</style>
 
 
 {% extends "TemplateLayout.html" %}
@@ -31,78 +31,90 @@
         <fieldset>
             <legend>Search options</legend>
             <div class="row">
-                <div class="col-md-6">
-                    <label for="sql_query">SELECT * FROM AllJobs WHERE</label><textarea rows="3" class="form-control" id="sql_query" name="sql_query" placeholder="languages LIKE '%C%' ORDER BY employer_name">{{ filter_words['sql_query'] }}</textarea>
+                <div class="col-md-2">
+                    <div class="pull-left">
+                        <label>Levels</label> <br />
+                        <label class="checkbox-inline">
+                            {% if filter_words['junior'] == 'junior' %}
+                            <input type="checkbox" name="junior" checked>Junior
+                            {% else %}
+                            <input type="checkbox" name="junior">Junior
+                            {% endif %}
+                        </label>
+                        <br />
+                        <label class="checkbox-inline">
+                            {% if filter_words['intermediate'] == 'intermediate' %}
+                            <input type="checkbox" name="intermediate" checked>Intermediate
+                            {% else %}
+                            <input type="checkbox" name="intermediate">Intermediate
+                            {% endif %}
+                        </label>
+                        <br />
+                        <label class="checkbox-inline">
+                            {% if filter_words['senior'] == 'senior' %}
+                            <input type="checkbox" name="senior" checked>Senior
+                            {% else %}
+                            <input type="checkbox" name="senior">Senior
+                            {% endif %}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-11 col-md-offset-1">
+                            <label for="summary">Keywords</label>
+                            <input type="text" width="100%" class="form-control" id="summary" name="summary" placeholder="game, video, awesome, C++" value="{{ filter_words['summary'] }}" autofocus autocomplete="on">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-offset-5 col-md-3">
+                            <input type="submit" width="100%" class="form-control" name="btnSubmit" value="GOOSE!"/>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-md-5 col-md-offset-1">
+            </div>
+            <a type="button" data-toggle="collapse" data-target="#more">Show more</a>
+            <div class="collapse" id="more">
+                <br /><br />
+                <div class="container">
+
                     <div class="row">
-                        <div class="col-md-6">
-                            <label>Keywords<input type="text" class="form-control" name="summary" placeholder="game, fun" value="{{ filter_words['summary'] }}"></label>
+                        <div class="col-md-6 ">
+                            <label for="location">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" placeholder="Toronto, China" value="{{ filter_words['location'] }}" />
                         </div>
                         <div class="col-md-6">
-                            <label>Location<input type="text" class="form-control" name="location" placeholder="Toronto, China" value="{{ filter_words['location'] }}"></label>
+                            <label for="discipline">Discipline</label>
+                            <input type="text" class="form-control" id="discipline" name="discipline" placeholder="ENG-Computer, ENG-Electrical" value="{{ filter_words['discipline'] }}" />
                         </div>
                     </div>
-                    <br />
+                    <br /><br />
+
                     <div class="row">
-                        <div class="col-md-12">
-                            <label>Levels</label><br/>
-                            <label class="checkbox-inline">
-                                {% if filter_words['junior'] == 'junior' %}
-                                <input type="checkbox" name="junior" checked>Junior
-                                {% else %}
-                                <input type="checkbox" name="junior">Junior
-                                {% endif %}
-                            </label>
-                            <label class="checkbox-inline">
-                                {% if filter_words['intermediate'] == 'intermediate' %}
-                                <input type="checkbox" name="intermediate" checked>Intermediate
-                                {% else %}
-                                <input type="checkbox" name="intermediate">Intermediate
-                                {% endif %}
-                            </label>
-                            <label class="checkbox-inline">
-                                {% if filter_words['senior'] == 'senior' %}
-                                <input type="checkbox" name="senior" checked>Senior
-                                {% else %}
-                                <input type="checkbox" name="senior">Senior
-                                {% endif %}
-                            </label>
-                        </div></div>
-                    <br />
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Discipline<input type="text" class="form-control" name="discipline" placeholder="ENG-Computer, ENG-Electrical" value="{{ filter_words['discipline'] }}"></label>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <label>Job Title<input type="text" class="form-control" name="job_title" placeholder="Developer" value="{{ filter_words['job_title'] }}"></label>
                         </div>
-                    </div>
-                    <br />
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <label>Job ID<input type="text" class="form-control" name="job_identifier" placeholder="00282461" value="{{ filter_words['job_identifier'] }}"></label>
                         </div>
-
                         <div class="col-md-6">
+                            <label for="sql_query">SELECT * FROM AllJobs WHERE</label><textarea rows="2 " class="form-control" id="sql_query" name="sql_query" placeholder="languages LIKE '%C%' ORDER BY employer_name">{{ filter_words['sql_query'] }}</textarea>
+                        </div>
+
+                        <div class="col-md-3">
                             <label>Employer Name<input type="text" class="form-control" name="employer_name" placeholder="Bombardier" value="{{ filter_words['employer_name'] }}"></label>
                         </div>
-                    </div>
-                    <br />
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <label>Language<input type="text" class="form-control" name="languages" placeholder="C, C++" value="{{ filter_words['languages'] }}"></label>
                         </div>
                     </div>
                 </div>
+                <br /><br />
 
-                <div class="col-md-2 col-md-offset-1">
-                    <div class="row">
-                        <input type="submit" class="form-control" name="btnSubmit" value="Submit"/>
-                    </div>
-                </div>
             </div>
+
         </fieldset>
     </form>
 </div>
@@ -111,56 +123,57 @@
     <table class="table">
         <caption>Search Results</caption>
         <thead>
-        <tr>
-            <th>Job Title</th>
-            <th>Level</th>
-            <th>Employer Name</th>
-            <th>Location</th>
-            <th>Openings</th>
-            <th>Short List</th>
-            <th>Languages<button type="button" class="glyphicon glyphicon-plus" onclick="openModal()"></button></th>
+        <tr >
+            <th class="text-center">Job Title</th>
+            <th class="text-center">Employer</th>
+            <th class="text-center">Location</th>
+            <th class="text-center">Languages
+                <button type="button" class="btn btn-default btn-sm" onclick="openModal()">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+            <th class="text-center">Level</th>
+            <th class="text-center">Openings</th>
+            <th class="text-center">Short List</th>
         </tr>
         </thead>
         <tbody>
 
         {% for job in jobs %}
         <tr data-toggle="collapse" data-target="#{{job['job_identifier']}}" class="jobHeader">
-            <td> {{ job['job_title'] }} </td>
-            <td> {{ job['level'] }} </td>
-            <td> {{ job['employer_name'] }} </td>
-            <td> {{ job['location'] }} </td>
-            <td> {{ job['number_of_openings'] }} </td>
-            <td> {{ job['shortlist'] }} </td>
-            <td> {{ job['languages'] }} </td>
+            <td class="text-center"> {{ job['job_title'] }} </td>
+            <td class="text-center"> {{ job['employer_name'] }} </td>
+            <td class="text-center"> {{ job['location'] }} </td>
+            <td class="text-center"> {{ job['languages'] }} </td>
+            <td class="text-center"> {{ job['level'] }} </td>
+            <td class="text-center"> {{ job['number_of_openings'] }} </td>
+            <td class="text-center"> {{ job['shortlist'] }}
+
+
+                <button type="button" class="btn btn-default btn-sm" onclick="">
+          <span style="color:green" class="glyphicon glyphicon-plus"></span> Add
+        </button> </td>
         </tr>
         <tr id="{{job['job_identifier']}}" class="collapse">
             <td colspan="7">
-                <div class="container" style="background-color: lightgoldenrodyellow">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <p><b>Job ID:</b> <br />{{job['job_identifier']}}</p>
-                            <p><b>Unit Name:</b> <br />{{job['unit_name']}}</p>
-                            <p><b>Disciplines:</b> <br />{{job['discipline']}}</p>
-                            <p><b>Hiring Support:</b> <br />{{job['hiring_support']}}</p>
-                            <p><b>Work Term Support:</b> <br />{{job['work_term_support']}}</p>
-                            <p><b>Apply:</b> <br />{{job['apply']}}</p>
-                            <p><b>Last Day to apply:</b> <br />{{job['last_day_to_apply']}}</p>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p><b>Job ID:</b> <br />{{job['job_identifier']}}</p>
+                        <p><b>Unit Name:</b> <br />{{job['unit_name']}}</p>
+                        <p><b>Disciplines:</b> <br />{{job['discipline']}}</p>
+                        <p><b>Hiring Support:</b> <br />{{job['hiring_support']}}</p>
+                        <p><b>Work Term Support:</b> <br />{{job['work_term_support']}}</p>
+                        <p><b>Apply:</b> <br />{{job['apply']}}</p>
+                        <p><b>Last Day to apply:</b> <br />{{job['last_day_to_apply']}}</p>
 
-                        </div>
-                        <div class="col-md-10">
-                            {{job['summary']|safe}}<br><br> <p><b>Comments:</b>{{job['comments']}}</p>
-                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        {{job['summary']|safe}}<br><br> <p><b>Comments: </b>{{job['comments']}}</p>
                     </div>
                 </div>
             </td>
         </tr>
         {% endfor %}
-
-
         </tbody>
-        <tfoot>
-        <tr><td>This is the footer</td></tr>
-        </tfoot>
     </table>
 </div>
 
@@ -169,12 +182,17 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="modal-title">Prioritize your languages</span><button type="button" class="btn btn-default" data-dismiss="modal">&times;</button>
+                <h3 style="display:inline" class="modal-title">
+                    Prioritize your languages</h3>
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <label>Prioritize languages (can separate languages with a ",") :
-                    <input type="text" id="prioritize_language" />
-                 </label>
+                <label>The "Languages" column displays up to four languages shown in the tab. There are a gadrillion languages
+                    so how do we determine which ones to shown in the "Languages" column? The "Languages" column tab will
+                    show the first four languages that are found on your list, in order of the items you placed. The update operation
+                    can take a while. You can separate languages with a ",":
+                    <input type="text" class="form-control" id="prioritize_language" value = "C,C++,.NET,C#,Java,Android,Linux,Apache,SQL,Ruby,Python,Javascript,ASP,MATLAB,iOS"/>
+                </label>
                 <button type="button" class="btn btn-default" onclick="prioritize_language()">Update</button>
             </div>
         </div>
@@ -195,11 +213,14 @@
 
 function openModal() {
     console.log('hey');
+
     $('#language_modal').modal({
         show: true,
         backdrop: false,
         keyboard:true
     });
+    document.getElementById('prioritize_language').focus();
+
 }
 
 function prioritize_language() {

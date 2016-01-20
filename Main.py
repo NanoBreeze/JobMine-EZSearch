@@ -18,13 +18,13 @@ def job_inquiry():
                     'job_identifier': '',
                     'summary': '',
                     'location' : '',
-                    'discipline' : '',
+                    'discipline' : 'Computer, Electrical, Software, Computer Science',
                     'job_title': '',
                     'employer_name' : '',
                     'languages' : '',
-                    'junior' : '',
-                    'intermediate' : '',
-                    'senior': ''}
+                    'junior' : 'junior',
+                    'intermediate' : 'intermediate',
+                    'senior': 'senior'}
 
     jobs = []
     return render_template("JobInquiry.html", jobs = jobs, filter_words = filter_words)
