@@ -62,7 +62,7 @@
                 <div class="col-md-8">
                     <div class="row">
                         <div class="col-md-11 col-md-offset-1">
-                            <label for="summary">Keywords</label>
+                            <label for="summary">Keywords in Summary</label>
                             <input type="text" width="100%" class="form-control" id="summary" name="summary" placeholder="game, video, awesome, C++" value="{{ filter_words['summary'] }}" autofocus autocomplete="on">
                         </div>
                     </div>
@@ -149,7 +149,7 @@
             <td class="text-center"> {{ job['shortlist'] }}
 
 
-                <button type="button" class="btn btn-default btn-sm" onclick="">
+                <button type="button" class="btn btn-default btn-sm" onclick="addToShortList('{{job['job_title']}}', '{{job['employer_name']}}', '{{job['job_identifier']}}')">
           <span style="color:green" class="glyphicon glyphicon-plus"></span> Add
         </button> </td>
         </tr>
@@ -220,7 +220,28 @@ function openModal() {
         keyboard:true
     });
     document.getElementById('prioritize_language').focus();
+}
 
+function addToShortList(job_title, employer_name, job_identifier) {
+
+    event.preventDefault();
+    data = { 'job_title' : job_title,
+            'employer_name': employer_name,
+            'job_identifier': job_identifier };
+
+    $.ajax({
+        type : "POST",
+        url : "/addToShortList",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8',
+        success : function() {
+            alert('HOOORAY, SUCCESSFULLY POSTED TO JOB');
+
+        },
+        error: function() {
+            alert('Could not add job to short list, something funky going on');
+        }
+    });
 }
 
 function prioritize_language() {

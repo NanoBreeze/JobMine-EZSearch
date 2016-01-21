@@ -3,12 +3,44 @@ import csv
 import json
 import filterJobs
 import populateLanguage
+import getJobs
+import requests
+from bs4 import BeautifulSoup
+
+#testing purposes only
+import sqlite3
 
 app = Flask(__name__)
 
 #the first page user sees. Requires the user to input their JobMine credentials
 @app.route('/')
 def welcome():
+
+
+    '''
+    connection=sqlite3.connect("jobs.db")
+    c = connection.cursor()
+    cur = (c.execute("SELECT last_day_to_apply FROM AllJobs WHERE job_identifier ='00281629'"))
+    c.execute("UPDATE AllJobs SET apply = '" + cur.fetchone()[0] + "', last_day_to_apply = 'TEST' WHERE job_identifier = '00281629'"  )
+    connection.commit()
+    connection.close()
+    '''
+    '''
+    exist = cur.fetchone()
+    if exist[0] == 0:
+        print('no')
+    else:
+        print('yes')
+        print(exist[0])
+    '''
+    '''
+    if cur.fetchone()[0]==0:
+        print('There is no component named')
+    else:
+        print('Component %s found in %s row(s))')
+        print(cur.fetchone()[0])
+    '''
+
     return render_template("Welcome.html")
 
 #shows the Job Inquiry page, where the user can search for jobs
@@ -113,7 +145,7 @@ def submit():
                         query += filter['column_name'] + " LIKE '%" + val + "%'"
                     else:
                         #special matching if we're filtering languages and the language is C
-                        if (filter['column_name'] == 'languages'):
+                        if (filter['column_name'] == 'languages') and val == 'C':
                             query += " OR languages LIKE '%C,%' OR languages LIKE '%,C%'"
                         else:
                             query += " OR " + filter['column_name'] + " LIKE '%" + val + "%'"
@@ -299,6 +331,75 @@ def export_json():
     json.dump(jobs_json, json_file, indent=4)
 
     return jsonify(a = 'nonthing')
+
+
+@app.route('/update_jobs')
+def update_jobs():
+    getJobs.updateJobs()
+    return jsonify(a = 'nothing')
+
+@app.route('/addToShortList', methods=['POST'])
+def add_to_short_list():
+
+    #request.json['job_title']
+    job_title = 'Manufacturing Design'
+
+    #request.json['employer_name']
+    employer_name = 'Apple Inc'
+
+    #maybe not needed after all, even with duplicates, use intelligence
+    job_identifier = request.json['job_identifier']
+    print('inside')
+    #search for the job with employer name and job title
+
+    session = requests.Session()
+    params = {'userid': 'l43cheng', 'pwd':'IAaW132@@@'} #timezoneOffset and submit are unnecessary but also submitted
+
+    #===============login
+    s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
+
+    #=================go to Job Inquiry, the get method must exist before using a post
+    s = session.get("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL?pslnkid=UW_CO_JOBSRCH_LINK&amp;FolderPath=PORTAL_ROOT_OBJECT.UW_CO_JOBSRCH_LINK&amp;IsFolder=false&amp;IgnoreParamTempl=FolderPath%2cIsFolder&amp;PortalActualURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentProvider=WORK&amp;PortalCRefLabel=Job%20Inquiry&amp;PortalRegistryName=EMPLOYEE&amp;PortalServletURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsp%2fES%2f&amp;PortalURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2f&amp;PortalHostNode=WORK&amp;NoCrumbs=yes&amp;PortalKeyStruct=yes")
+    #since after we check Approved, Posted, and Cancelled, then every other job must be in Apps Avail. I will do complementary counting by first
+    #setting all to Apps Avail
+
+    searchForJob('APPR',employer_name,job_title,session)
+    searchForJob('APPA',employer_name,job_title,session)
+    searchForJob('CANC',employer_name,job_title,session)
+
+
+def searchForJob(apply, employer_name, job_title, session):
+
+    #search for the job
+    print('about to search')
+    paramsForSearch = {
+    'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165',
+    'ICAction':'UW_CO_JOBSRCHDW_UW_CO_DW_SRCHBTN',
+    'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=',
+    'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': str(apply),
+         'UW_CO_JOBSRCH_UW_CO_EMPLYR_NAME': str(employer_name),
+          'UW_CO_JOBSRCH_UW_CO_JOB_TITLE': str(job_title)
+    }
+    s = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL", paramsForSearch)
+
+    #here, we check if this is the correct section and we can post to it. It is the wrong section if the span with class PSHYPERLINKDISABLED exists
+
+
+    bsObj = BeautifulSoup(s._content, "html.parser")
+    if (bsObj.find("span", {"title" : "Job Title (Hyper Link)"}) == None):
+
+        #add to short list
+        print('about to add to short list')
+        paramsForShortList = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_SLIST_HL$0',
+                        'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': str(apply)}
+
+        m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL", paramsForShortList)
+
+
+
+
+    return jsonify(a = 'nothing')
+
 
 #the prioritization of the languages have changed so we must change the database column as well
 @app.route('/update_languages', methods=['POST'])
