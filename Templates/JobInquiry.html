@@ -5,15 +5,29 @@
     }
 
     tr.jobHeader {
-    background-color: slategray;
+    background-color: #37B94D;
+    border-left: 2px solid gray;
+    border-right: 2px solid gray;
     }
 
     tr.jobHeader td {
-    color: white;
+    color: black;
+    }
+
+    tr.jobHeaderCancelled {
+        background-color: rgb(255, 98, 98);
+    }
+
+    tr.jobHeaderApproved {
+    background-color: rgb(68, 179, 212);
+    }
+
+    tr.jobHeaderAvail {
+    background-color: rgb(218, 151, 30);
     }
 
     tr.jobHeader:hover {
-    background-color: gray;
+    background-color: #BFBFBF;
     color:yellow;
     }
 
@@ -27,9 +41,11 @@
 {% block body %}
 
 <div class="container">
+     <div class="page-header">
+        <h1>Job Inquiry | Shortlist</h1>
+    </div>
     <form class="form-group" action="submit" method="post" id="fo">
         <fieldset>
-            <legend>Search options</legend>
             <div class="row">
                 <div class="col-md-2">
                     <div class="pull-left">
@@ -124,23 +140,31 @@
         <caption>Search Results</caption>
         <thead>
         <tr >
-            <th class="text-center">Job Title</th>
-            <th class="text-center">Employer</th>
-            <th class="text-center">Location</th>
-            <th class="text-center">Languages
-                <button type="button" class="btn btn-default btn-sm" onclick="openModal()">
+            <th class="text-center"><h3>Job Title</h3></th>
+            <th class="text-center"><h3>Employer</h3></th>
+            <th class="text-center"><h3>Location</h3></th>
+            <th class="text-center"><h2>
+     <button type="button" class="btn btn-default btn-sm" onclick="openModal()" style="display: inline;">
                     <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-            <th class="text-center">Level</th>
-            <th class="text-center">Openings</th>
-            <th class="text-center">Short List</th>
+  Languages</button></h2></th>
+            <th class="text-center"><h3>Level</h3></th>
+            <th class="text-center"><h3>Openings</h3></th>
+            <th class="text-center"><h3>Short List</h3></th>
         </tr>
         </thead>
         <tbody>
 
         {% for job in jobs %}
+        {% if job['apply'] == 'POSTED' %}
         <tr data-toggle="collapse" data-target="#{{job['job_identifier']}}" class="jobHeader">
-            <td class="text-center"> {{ job['job_title'] }} </td>
+        {% elif job['apply'] == 'CANCELLED' %}
+        <tr data-toggle="collapse" data-target="#{{job['job_identifier']}}" class="jobHeaderCancelled">
+         {% elif job['apply'] == 'APPR' %}
+                    <tr data-toggle="collapse" data-target="#{{job['job_identifier']}}" class="jobHeaderApproved">
+         {% else %}
+        <tr data-toggle="collapse" data-target="#{{job['job_identifier']}}" class="jobHeaderAvail">
+        {% endif %}
+            <td class="text-center">{{ job['job_title'] }}</td>
             <td class="text-center"> {{ job['employer_name'] }} </td>
             <td class="text-center"> {{ job['location'] }} </td>
             <td class="text-center"> {{ job['languages'] }} </td>
@@ -204,12 +228,8 @@
     </div>
 </div>
 
-
 {% endblock %}
 
-{# sdfsdfdsfsdf
-#: <canvas id="countries" width="600" height="400"></canvas>
-#}
 
 
 {% block scripts %}

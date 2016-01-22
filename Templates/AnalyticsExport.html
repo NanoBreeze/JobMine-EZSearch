@@ -79,24 +79,53 @@
         <h1>Exports</h1>
     </div>
     <div class="row">
-        <div class="col-md-3">
-            <h3>HTML</h3>
-            <a href="/exportHtml/0" target="_blank"> 1 - 1000 jobs</a>
-            <a href="/exportHtml/1000" target="_blank">1001 - 2000 jobs</a>
-            <a href="/exportHtml/2000" target="_blank">2001 - 3000 jobs</a>
-            <a href="/exportHtml/3000" target="_blank">3001 - 4000 jobs</a>
+        <div class="col-md-3 text-center">
+
+            <div class="col-md-6">
+                <a href="/exportHtml/0" target="_blank" >
+                    <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:100%;">
+                </a>
+                <h4>1-1000</h4>
+                </div>
+                <div class="col-md-6">
+                    <a href="/exportHtml/1000" target="_blank">
+                        <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:100%;">
+                    </a>
+                    <h4>1001-2000</h4>
+                </div>
+                <div class="col-md-6">
+                    <a href="/exportHtml/2000" target="_blank">
+                        <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:100%;">
+
+                    </a>
+                    <h4>2001-3000</h4>
+                </div>
+                <div class="col-md-6">
+                    <a href="/exportHtml/3000" target="_blank">
+                        <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:100%;">
+
+                    </a>
+                    <h4>3001 - End</h4>
+                </div>
+            </div>
+
+        <div class="col-md-3 text-center">
+            <a href="/exportCsv" target="_blank">
+                    <img src="{{ url_for('static', filename = 'csv_logo.png') }}" style="width:100%;">
+
+                </a>
         </div>
-        <div class="col-md-3">
-            <h3>CSV</h3>
-            <a href="/exportCsv" target="_blank">Export CSV</a>
+        <div class="col-md-3 text-center">
+            <a href="/exportTxt" target="_blank">
+                <img src="{{ url_for('static', filename = 'txt_logo.png') }}" style="width:100%;">
+            </a>
         </div>
-        <div class="col-md-3">
-            <h3>TXT</h3>
-            <a href="/exportTxt" target="_blank">Export TXT</a>
-        </div>
-        <div class="col-md-3">
-            <h3>JSON</h3>
-            <a href="/exportJson" target="_blank">Export JSON</a>
+
+        <div class="col-md-3 text-center">
+
+            <a href="/exportJson" target="_blank">
+                    <img src="{{ url_for('static', filename = 'json_logo.png') }}" style="width:100%;">
+            </a>
         </div>
     </div>
 </div>
