@@ -146,12 +146,17 @@
             <td class="text-center"> {{ job['languages'] }} </td>
             <td class="text-center"> {{ job['level'] }} </td>
             <td class="text-center"> {{ job['number_of_openings'] }} </td>
-            <td class="text-center"> {{ job['shortlist'] }}
-
-
-                <button type="button" class="btn btn-default btn-sm" onclick="addToShortList('{{job['job_title']}}', '{{job['employer_name']}}', '{{job['job_identifier']}}')">
-          <span style="color:green" class="glyphicon glyphicon-plus"></span> Add
-        </button> </td>
+            <td class="text-center">
+            {% if job['in_short_list'] == 'N' %}
+                <button type="button" class="btn btn-default btn-sm" onclick="addToShortList('{{job['job_title']}}', '{{job['employer_name']}}', '{{job['job_identifier']}}'") >
+                <span style="color:green" class="glyphicon glyphicon-plus"></span> Add
+                </button>
+                {% else %}
+                 <button type="button" class="btn btn-default btn-sm" onclick="removeFromShortList('{{job['job_identifier']}}')" >
+                <span style="color:red" class="glyphicon glyphicon glyphicon-minus"></span> Remove
+                </button>
+                 {% endif %}
+            </td>
         </tr>
         <tr id="{{job['job_identifier']}}" class="collapse">
             <td colspan="7">
@@ -239,9 +244,30 @@ function addToShortList(job_title, employer_name, job_identifier) {
 
         },
         error: function() {
-            alert('Could not add job to short list, something funky going on');
+            alert('Connection broken. Something funky happened');
         }
     });
+}
+
+function removeFromShortList(job_identifier) {
+
+    console.log('removeFromShortList is called');
+    event.preventDefault();
+        data = { 'job_identifier': job_identifier };
+
+        $.ajax({
+            type : "POST",
+            url : "/removeFromShortList",
+            data: JSON.stringify(data),
+            contentType: 'application/json;charset=UTF-8',
+            success : function() {
+                alert('HOOORAY, SUCCESSFULLY REMOVED FROM SHORLIST');
+
+            },
+            error: function() {
+                alert('Connection broken. Something funky happened');
+            }
+        });
 }
 
 function prioritize_language() {
@@ -265,31 +291,6 @@ function submitWithOrderBy(orderByParameter){
     document.forms[0].submit();
 }
 
-
-var pieData = [
-	{
-		value: 20,
-		color:"#878BB6"
-	},
-	{
-		value : 40,
-		color : "#4ACAB4"
-	},
-	{
-		value : 10,
-		color : "#FF8153"
-	},
-	{
-		value : 30,
-		color : "#FFEA88"
-	}
-];
-var pieOptions = {
-	segmentShowStroke : false,
-	animateScale : true
-}
-var countries= document.getElementById("countries").getContext("2d");
-new Chart(countries).Pie(pieData, pieOptions);
 </script>
 
 

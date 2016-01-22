@@ -284,8 +284,8 @@ def getJobs(job_status,view_all):
             summary = summary.replace(r'<br />', '\n')
             '''
             print(summary)
-            c.execute("INSERT INTO AllJobs(job_identifier, job_title, employer_name, unit_name, location, number_of_openings, discipline, level, hiring_support, work_term_support, comments, summary, apply, last_day_to_apply) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                                           (job_identifier, job_title, employer_name, unit_name, location, number_of_openings, discipline, level, hiring_support, work_term_support, comments, summary, apply, last_day_to_apply))
+            c.execute("INSERT INTO AllJobs(job_identifier, job_title, employer_name, unit_name, location, number_of_openings, discipline, level, hiring_support, work_term_support, comments, summary, apply, last_day_to_apply, in_short_list) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                           (job_identifier, job_title, employer_name, unit_name, location, number_of_openings, discipline, level, hiring_support, work_term_support, comments, summary, apply, last_day_to_apply, 'N'))
             connection.commit()
 
 

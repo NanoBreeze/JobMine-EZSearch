@@ -33,8 +33,8 @@ def filter_by_SQL(query):
     jobs = []
 
     for row in cur.fetchall():
-        jobs.append({'job_title': row[1],'level': row[6], 'employer_name': row[2], 'location': row[4], 'number_of_openings':row[5], 'shortlist': 'TO DO: ADD SHORT LIST', 'languages' : row[12],
-                     'summary': row[11], 'job_identifier':row[0], 'unit_name':row[3], 'discipline': row[7], 'hiring_support': row[8], 'work_term_support':row[9], 'comments': row[10], 'apply': row[13], 'last_day_to_apply':row[14]   })
+        jobs.append({'job_title': row[1],'level': row[6], 'employer_name': row[2], 'location': row[4], 'number_of_openings':row[5], 'in_short_list':row[15], 'languages' : row[12],
+                     'summary': row[11], 'job_identifier':row[0], 'unit_name':row[3], 'discipline': row[7], 'hiring_support': row[8], 'work_term_support':row[9], 'comments': row[10], 'apply': row[13], 'last_day_to_apply':row[14],  })
 
     connection.close()
 

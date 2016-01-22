@@ -56,7 +56,7 @@ def job_inquiry():
                     'languages' : '',
                     'junior' : 'junior',
                     'intermediate' : 'intermediate',
-                    'senior': 'senior'}
+                    'senior': 'senior' }
 
     jobs = []
     return render_template("JobInquiry.html", jobs = jobs, filter_words = filter_words)
@@ -213,6 +213,13 @@ def analytics_export():
                            analytics_job_containing_keywords_count = analytics_job_containing_keywords_count
                            )
 
+@app.route('/docs')
+def docs():
+    return render_template("Docs.html")
+
+@app.route('/feedback')
+def feedback():
+    return render_template("Feedback.html")
 
 #displays all jobs
 @app.route('/exportHtml/<int:offset>')
@@ -341,15 +348,15 @@ def update_jobs():
 @app.route('/addToShortList', methods=['POST'])
 def add_to_short_list():
 
-    #request.json['job_title']
-    job_title = 'Manufacturing Design'
+    job_title = request.json['job_title']
+    #job_title = 'Manufacturing Design'
 
-    #request.json['employer_name']
-    employer_name = 'Apple Inc'
+    employer_name = request.json['employer_name']
+    #employer_name = 'Apple Inc'
 
     #maybe not needed after all, even with duplicates, use intelligence
     job_identifier = request.json['job_identifier']
-    print('inside')
+
     #search for the job with employer name and job title
 
     session = requests.Session()
@@ -363,12 +370,13 @@ def add_to_short_list():
     #since after we check Approved, Posted, and Cancelled, then every other job must be in Apps Avail. I will do complementary counting by first
     #setting all to Apps Avail
 
-    searchForJob('APPR',employer_name,job_title,session)
-    searchForJob('APPA',employer_name,job_title,session)
-    searchForJob('CANC',employer_name,job_title,session)
+    searchForJob('APPR',employer_name,job_title,job_identifier, session)
+    searchForJob('APPA',employer_name,job_title,job_identifier, session)
+    searchForJob('CANC',employer_name,job_title,job_identifier, session)
 
+    return jsonify(a = 'nothing')
 
-def searchForJob(apply, employer_name, job_title, session):
+def searchForJob(apply, employer_name, job_title, job_identifier, session):
 
     #search for the job
     print('about to search')
@@ -382,23 +390,87 @@ def searchForJob(apply, employer_name, job_title, session):
     }
     s = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL", paramsForSearch)
 
-    #here, we check if this is the correct section and we can post to it. It is the wrong section if the span with class PSHYPERLINKDISABLED exists
+    print('just pressed the search button')
 
+    #here, we check if this is the correct section and we can post to it.
+    # It is the correct section if the span holding the first entry has a matching job id, UW_CO_JOBRES_VW_UW_CO_JOB_ID$0.
+    # I think if two jobs have same name, this will fail
+    # but that's a small inconvenience and I think the user can manually handle it.
+
+    #print(s.text)
 
     bsObj = BeautifulSoup(s._content, "html.parser")
-    if (bsObj.find("span", {"title" : "Job Title (Hyper Link)"}) == None):
+    if (bsObj.find("span", {"id" : "UW_CO_JOBRES_VW_UW_CO_JOB_ID$0"}).get_text() == job_identifier):
 
+        print('found! The job_identifier is:' + job_identifier)
         #add to short list
         print('about to add to short list')
         paramsForShortList = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_SLIST_HL$0',
-                        'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': str(apply)}
+                        'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_EMPLYR_NAME': str(employer_name),
+                        'UW_CO_JOBSRCH_UW_CO_JOB_TITLE' : str(job_title)}
+
+        #'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': str(apply)
 
         m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL", paramsForShortList)
+        print('just finished adding')
+
+    else:
+        print('not found')
+
+@app.route('/removeFromShortList', methods=['POST'])
+def remove_from_short_list():
+
+    job_identifier = request.json['job_identifier']
+    session = requests.Session()
+    params = {'userid': 'l43cheng', 'pwd':'IAaW132@@@'} #timezoneOffset and submit are unnecessary but also submitted
+
+    #===============login
+    s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
 
 
+    #================go to the Job Short List page. This get might be necessary in order to do a POST
 
+    s = session.get("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL?pslnkid=UW_CO_JOB_SLIST_LINK&FolderPath=PORTAL_ROOT_OBJECT.UW_CO_JOB_SLIST_LINK&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder")
 
-    return jsonify(a = 'nothing')
+    bsObj = BeautifulSoup(s.text, "html.parser")
+    print('on job short list page, about to loop through jobs to find correct one, by matching job_identifier')
+
+    k = bsObj.find("span", {"id" : "UW_CO_STUJOBLST_UW_CO_JOB_ID$0"}).get_text()
+    print(k)
+
+    #loop through jobs until find matching one
+    for i in range(0,100,1):
+        print(str(i))
+        #provides a stopping point.
+        if bsObj.find("span", {"id" : "UW_CO_STUJOBLST_UW_CO_JOB_ID$" + str(i)}) == None :
+                print('This span does not exist, which means we have already scrolled through all removed jobs')
+                break
+        print('not in if statement')
+        #print('we are in the else statement. The value of the find is: '+ bsObj.find("span", {"id" : "UW_CO_JOBRES_VW_UW_CO_JOB_ID$" + str(i)}))
+        short_list_job_identifier = bsObj.find("span", {"id" : "UW_CO_STUJOBLST_UW_CO_JOB_ID$" + str(i)}).get_text()
+        print(short_list_job_identifier)
+        #if the found ID in JobMine's shortlist matches the one we're looking, remove that job
+        if (short_list_job_identifier == job_identifier):
+            print('found a match!')
+            #delete the job on the shortlist that matches the same id as the selected job
+            paramsForDeleteShortListJob = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_STUJOBLST$delete$' + str(i) + '$$0',
+                                            'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k='}
+
+            m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL", paramsForDeleteShortListJob)
+
+            print('finished deleting and about to save')
+
+            paramsForSave = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'#ICSave',
+                              'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k='}
+
+            m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL ", paramsForSave)
+
+            print('finished saving delete')
+
+        print('match not found,index was at:' + str(i))
+
+    return jsonify (a = 'nothing')
+
 
 
 #the prioritization of the languages have changed so we must change the database column as well
