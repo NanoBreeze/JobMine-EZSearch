@@ -27,7 +27,7 @@ def updateJobs():
     #since after we check Approved, Posted, and Cancelled, then every other job must be in Apps Avail. I will do complementary counting by first
     #setting all to Apps Avail
 
-    '''
+
     c.execute("UPDATE AllJobs SET apply = 'APPS AVAIL'" )
     connection.commit()
     print('Finished setting all apply to APPS AVAIL')
@@ -37,7 +37,6 @@ def updateJobs():
 
     examineJobStatus('POST', False, connection, c, session)
     print('Finished POST page')
-    '''
 
     examineJobStatus('CANC', False, connection, c, session)
     print('Finished CANCELLED page')

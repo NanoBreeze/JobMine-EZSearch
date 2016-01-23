@@ -1,6 +1,7 @@
 import sqlite3
 
 
+
 #returns all data related to each job. Intended for exportCsv so we return a list of lists
 def give_all_jobs():
     connection=sqlite3.connect("jobs.db")
@@ -52,6 +53,9 @@ def get_jobs_for_HTML_export(offset = 0, limit = 1000):
 
     connection.close()
     return jobs
+
+
+
 
 #returns a list of the number of jobs that contain one of 10 pre-set languages. This is very bad SQL but it works and I'm not sure what the optimized SQL looks like
 def analytics_language_count():

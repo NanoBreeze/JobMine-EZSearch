@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+from post import posts
 import csv
 import json
 import filterJobs
@@ -11,10 +12,12 @@ from bs4 import BeautifulSoup
 import sqlite3
 
 app = Flask(__name__)
+app.register_blueprint(posts)
 
 #the first page user sees. Requires the user to input their JobMine credentials
 @app.route('/')
 def welcome():
+
 
     with open("ShortListJobs.txt", "w") as myfile:
         myfile.write("This file stores information about the jobs you wanted to short list. \n"
@@ -65,6 +68,7 @@ def job_inquiry():
     jobs = []
     return render_template("JobInquiry.html", jobs = jobs, filter_words = filter_words)
 
+'''
 #receives all search filters user posts from Job Inquiry
 #If the user typed SQL queries (sql_query is not an empty string), then we examine the SQL queries only and ignore the values in the other <input>s
 #we only examine the value of <input>s that contain content and ignore all empty <input>s
@@ -159,7 +163,7 @@ def submit():
     jobs = filterJobs.filter_by_SQL(query)
 
     return render_template("JobInquiry.html", jobs = jobs, filter_words = filter_words)
-
+'''
 
 
 #displays the Analytics and Exports page
@@ -344,178 +348,6 @@ def export_json():
     return jsonify(a = 'nonthing')
 
 
-@app.route('/update_jobs')
-def update_jobs():
-    getJobs.updateJobs()
-    return jsonify(a = 'nothing')
-
-@app.route('/addToShortList', methods=['POST'])
-def add_to_short_list():
-
-
-
-    job_title = request.json['job_title']
-    #job_title = 'Manufacturing Design'
-
-    employer_name = request.json['employer_name']
-    #employer_name = 'Apple Inc'
-
-    #maybe not needed after all, even with duplicates, use intelligence
-    job_identifier = request.json['job_identifier']
-
-    #search for the job with employer name and job title
-
-    session = requests.Session()
-    params = {'userid': 'l43cheng', 'pwd':'IAaW132@@@'} #timezoneOffset and submit are unnecessary but also submitted
-
-    #===============login
-    s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
-
-    #=================go to Job Inquiry, the get method must exist before using a post
-    s = session.get("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL?pslnkid=UW_CO_JOBSRCH_LINK&amp;FolderPath=PORTAL_ROOT_OBJECT.UW_CO_JOBSRCH_LINK&amp;IsFolder=false&amp;IgnoreParamTempl=FolderPath%2cIsFolder&amp;PortalActualURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentProvider=WORK&amp;PortalCRefLabel=Job%20Inquiry&amp;PortalRegistryName=EMPLOYEE&amp;PortalServletURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsp%2fES%2f&amp;PortalURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2f&amp;PortalHostNode=WORK&amp;NoCrumbs=yes&amp;PortalKeyStruct=yes")
-    #since after we check Approved, Posted, and Cancelled, then every other job must be in Apps Avail. I will do complementary counting by first
-    #setting all to Apps Avail
-
-    appr = searchForJob('APPR',employer_name,job_title,job_identifier, session)
-    appa = searchForJob('APPA',employer_name,job_title,job_identifier, session)
-    post = searchForJob('POST',employer_name,job_title,job_identifier, session)
-
-    with open("AddingToShortList.txt", "a") as myfile:
-        myfile.write(employer_name + "\r\t")
-    myfile.close()
-
-
-    if (appr == True) or (appa == True) or (post == True):
-        connection=sqlite3.connect("jobs.db")
-        c = connection.cursor()
-        c.execute("UPDATE AllJobs SET in_short_list = 'Y' WHERE job_identifier = '" + job_identifier + "'" )
-        connection.commit()
-        connection.close()
-
-        with open("ShortListJobs.txt", "a") as myfile:
-            myfile.write("\n\n=================SUCCESSFUL=================\n" + job_title + "\t" + employer_name + "\t" + job_identifier + "\n======================================================================")
-        myfile.close()
-        return jsonify(a = 'Found')
-    else:
-        with open("ShortListJobs.txt", "a") as myfile:
-            myfile.write("=================REQUIRES ATTENTION =================" + job_title + "\t" + employer_name + "\t" + job_identifier + "\n======================================================================")
-        myfile.close()
-        return jsonify(a = 'Not Found')
-
-def searchForJob(apply, employer_name, job_title, job_identifier, session):
-
-    #search for the job
-    print('about to search')
-    paramsForSearch = {
-    'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165',
-    'ICAction':'UW_CO_JOBSRCHDW_UW_CO_DW_SRCHBTN',
-    'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=',
-    'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': str(apply),
-         'UW_CO_JOBSRCH_UW_CO_EMPLYR_NAME': str(employer_name),
-          'UW_CO_JOBSRCH_UW_CO_JOB_TITLE': str(job_title)
-    }
-    s = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL", paramsForSearch)
-
-    print('just pressed the search button')
-
-    #here, we check if this is the correct section and we can post to it.
-    # It is the correct section if the span holding the first entry has a matching job id, UW_CO_JOBRES_VW_UW_CO_JOB_ID$0.
-    # I think if two jobs have same name, this will fail
-    # but that's a small inconvenience and I think the user can manually handle it.
-
-    #print(s.text)
-
-    bsObj = BeautifulSoup(s._content, "html.parser")
-    print(bsObj.find("span", {"id" : "UW_CO_JOBRES_VW_UW_CO_JOB_ID$0"}).get_text())
-
-    if (bsObj.find("span", {"id" : "UW_CO_JOBRES_VW_UW_CO_JOB_ID$0"}).get_text() == job_identifier):
-
-        print('found! The job_identifier is:' + job_identifier)
-        #add to short list
-        print('about to add to short list')
-        paramsForShortList = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_SLIST_HL$0',
-                        'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_EMPLYR_NAME': str(employer_name),
-                        'UW_CO_JOBSRCH_UW_CO_JOB_TITLE' : str(job_title)}
-
-        #'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': str(apply)
-
-        m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL", paramsForShortList)
-        print('just finished adding')
-        return True
-    else:
-        return False
-
-@app.route('/removeFromShortList', methods=['POST'])
-def remove_from_short_list():
-
-    job_identifier = request.json['job_identifier']
-    session = requests.Session()
-    params = {'userid': 'l43cheng', 'pwd':'IAaW132@@@'} #timezoneOffset and submit are unnecessary but also submitted
-
-    #===============login
-    s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
-
-
-    #================go to the Job Short List page. This get might be necessary in order to do a POST
-
-    s = session.get("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL?pslnkid=UW_CO_JOB_SLIST_LINK&FolderPath=PORTAL_ROOT_OBJECT.UW_CO_JOB_SLIST_LINK&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder")
-
-    bsObj = BeautifulSoup(s.text, "html.parser")
-    print('on job short list page, about to loop through jobs to find correct one, by matching job_identifier')
-
-    k = bsObj.find("span", {"id" : "UW_CO_STUJOBLST_UW_CO_JOB_ID$0"}).get_text()
-    print(k)
-
-    #loop through jobs until find matching one
-    for i in range(0,100,1):
-        print(str(i))
-        #provides a stopping point.
-        if bsObj.find("span", {"id" : "UW_CO_STUJOBLST_UW_CO_JOB_ID$" + str(i)}) == None :
-                print('This span does not exist, which means we have already scrolled through all removed jobs')
-                break
-        print('not in if statement')
-        #print('we are in the else statement. The value of the find is: '+ bsObj.find("span", {"id" : "UW_CO_JOBRES_VW_UW_CO_JOB_ID$" + str(i)}))
-        short_list_job_identifier = bsObj.find("span", {"id" : "UW_CO_STUJOBLST_UW_CO_JOB_ID$" + str(i)}).get_text()
-        print(short_list_job_identifier)
-        #if the found ID in JobMine's shortlist matches the one we're looking, remove that job
-        if (short_list_job_identifier == job_identifier):
-            print('found a match!')
-            #delete the job on the shortlist that matches the same id as the selected job
-            paramsForDeleteShortListJob = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_STUJOBLST$delete$' + str(i) + '$$0',
-                                            'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k='}
-
-            m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL", paramsForDeleteShortListJob)
-
-            print('finished deleting and about to save')
-
-            paramsForSave = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'#ICSave',
-                              'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k='}
-
-            m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL ", paramsForSave)
-
-            print('finished saving delete')
-
-        print('match not found,index was at:' + str(i))
-
-    return jsonify (a = 'nothing')
-
-
-
-#the prioritization of the languages have changed so we must change the database column as well
-@app.route('/update_languages', methods=['POST'])
-def update_languages():
-
-    user_languages_list = request.json['user_languages_list'].split(',')
-
-    #languages have no spaces in their strings and we remove empty strings
-    user_languages_list = [x.strip() for x in user_languages_list]
-
-    while '' in user_languages_list:
-        user_languages_list.remove('')
-
-
-    populateLanguage.populate(user_languages_list)
-    return jsonify(a = 'nothing')
 
 # start the server with the 'run()' method
 if __name__ == '__main__':

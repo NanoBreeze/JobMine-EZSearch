@@ -74,4 +74,13 @@ Software Engineering	Improbable	00285486
 
 =================SUCCESSFUL=================
 Cloud Software Support Project Developer	IBM Canada Limited	00283419
+=======================================================================================REQUIRES ATTENTION =================Development Support	Electronic Arts Ltd	00282417
+======================================================================
+
+=================SUCCESSFUL=================
+Associate Developer - Central Development Services	Electronic Arts Ltd	00282342
+======================================================================
+
+=================SUCCESSFUL=================
+Development Support	Electronic Arts Ltd	00282339
 ======================================================================
