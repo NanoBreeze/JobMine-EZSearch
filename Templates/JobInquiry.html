@@ -1,7 +1,7 @@
 
 <style>
     textarea {
-    resize:none
+    //resize:none
     }
 
     tr.jobHeader {
@@ -22,16 +22,20 @@
     background-color: rgb(68, 179, 212);
     }
 
+    tr.jobHeaderApproved : hover {
+    background-color: orange;
+    }
+
     tr.jobHeaderAvail {
     background-color: rgb(218, 151, 30);
     }
 
-    tr.jobHeader:hover {
+    tr :hover {
     background-color: #BFBFBF;
     color:yellow;
     }
 
-    tr.jobHeader:hover td {
+    tr :hover td {
     background-color: transparent; /* or #000 */
     }
 </style>
@@ -42,12 +46,12 @@
 
 <div class="container">
      <div class="page-header">
-        <h1>Job Inquiry | Shortlist</h1>
+        <h1>Job Inquiry & Shortlist</h1>
     </div>
     <form class="form-group" action="submit" method="post" id="fo">
         <fieldset>
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-xs-2">
                     <div class="pull-left">
                         <label>Levels</label> <br />
                         <label class="checkbox-inline">
@@ -75,7 +79,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-8 col-md-offset-0 col-xs-offset-1 col-xs-9">
                     <div class="row">
                         <div class="col-md-11 col-md-offset-1">
                             <label for="summary">Keywords in Summary</label>
@@ -97,11 +101,11 @@
                 <div class="container">
 
                     <div class="row">
-                        <div class="col-md-6 ">
+                        <div class="col-sm-6 ">
                             <label for="location">Location</label>
                             <input type="text" class="form-control" id="location" name="location" placeholder="Toronto, China" value="{{ filter_words['location'] }}" />
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-sm-6">
                             <label for="discipline">Discipline</label>
                             <input type="text" class="form-control" id="discipline" name="discipline" placeholder="ENG-Computer, ENG-Electrical" value="{{ filter_words['discipline'] }}" />
                         </div>
@@ -109,21 +113,22 @@
                     <br /><br />
 
                     <div class="row">
-                        <div class="col-md-3">
-                            <label>Job Title<input type="text" class="form-control" name="job_title" placeholder="Developer" value="{{ filter_words['job_title'] }}"></label>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                             <label for="employer_name">Employer Name</label><input type="text" class="form-control" id="employer_name" name="employer_name" placeholder="Bombardier" value="{{ filter_words['employer_name'] }}">
                         </div>
-                        <div class="col-md-3">
-                            <label>Job ID<input type="text" class="form-control" name="job_identifier" placeholder="00282461" value="{{ filter_words['job_identifier'] }}"></label>
+                        <div class="col-xs-12 col-sm-6 col-md-3">
+                            <label for="job_identifier">Job ID</label><input type="text" class="form-control" id="job_identifier" name="job_identifier" placeholder="00282461" value="{{ filter_words['job_identifier'] }}">
                         </div>
-                        <div class="col-md-6">
-                            <label for="sql_query">SELECT * FROM AllJobs WHERE</label><textarea rows="2 " class="form-control" id="sql_query" name="sql_query" placeholder="languages LIKE '%C%' ORDER BY employer_name">{{ filter_words['sql_query'] }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-3 ">
+                            <label for="job_title">Job Title</label><input type="text" class="form-control" id="job_title" name="job_title" placeholder="Developer" value="{{ filter_words['job_title'] }}">
                         </div>
-
-                        <div class="col-md-3">
-                            <label>Employer Name<input type="text" class="form-control" name="employer_name" placeholder="Bombardier" value="{{ filter_words['employer_name'] }}"></label>
+                        <div class="col-xs-12 col-sm-6 col-md-3 ">
+                            <label for="languages">Language</label><input type="text" class="form-control" id="languages" name="languages" placeholder="C, C++" value="{{ filter_words['languages'] }}">
                         </div>
-                        <div class="col-md-3">
-                            <label>Language<input type="text" class="form-control" name="languages" placeholder="C, C++" value="{{ filter_words['languages'] }}"></label>
+                            <div class="col-xs-12 col-md-6 col-md-pull-0">
+                            <label for="sql_query">SELECT * FROM AllJobs WHERE</label><textarea rows="1" class="form-control" id="sql_query" name="sql_query" placeholder="languages LIKE '%C%' ORDER BY employer_name">{{ filter_words['sql_query'] }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -137,17 +142,16 @@
 
 <div class="container">
     <table class="table">
-        <caption>Search Results</caption>
         <thead>
         <tr >
             <th class="text-center"><h3>Job Title</h3></th>
             <th class="text-center"><h3>Employer</h3></th>
             <th class="text-center"><h3>Location</h3></th>
-            <th class="text-center"><h2>
-     <button type="button" class="btn btn-default btn-sm" onclick="openModal()" style="display: inline;">
+            <th class="text-center hidden-xs"><h2>
+     <button type="button" class="btn btn-default btn-xs" onclick="openModal()" style="display: inline;">
                     <span class="glyphicon glyphicon-pencil"></span>
   Languages</button></h2></th>
-            <th class="text-center"><h3>Level</h3></th>
+            <th class="text-center hidden-xs hidden-sm"><h3>Level</h3></th>
             <th class="text-center"><h3>Openings</h3></th>
             <th class="text-center"><h3>Short List</h3></th>
         </tr>
@@ -160,15 +164,15 @@
         {% elif job['apply'] == 'CANCELLED' %}
         <tr data-toggle="collapse" data-target="#{{job['job_identifier']}}" class="jobHeaderCancelled">
          {% elif job['apply'] == 'APPR' %}
-                    <tr data-toggle="collapse" data-target="#{{job['job_identifier']}}" class="jobHeaderApproved">
+         <tr data-toggle="collapse" data-target="#{{job['job_identifier']}}" class="jobHeaderApproved">
          {% else %}
         <tr data-toggle="collapse" data-target="#{{job['job_identifier']}}" class="jobHeaderAvail">
         {% endif %}
             <td class="text-center">{{ job['job_title'] }}</td>
             <td class="text-center"> {{ job['employer_name'] }} </td>
             <td class="text-center"> {{ job['location'] }} </td>
-            <td class="text-center"> {{ job['languages'] }} </td>
-            <td class="text-center"> {{ job['level'] }} </td>
+            <td class="text-center hidden-xs"> {{ job['languages'] }} </td>
+            <td class="text-center hidden-xs hidden-sm"> {{ job['level'] }} </td>
             <td class="text-center"> {{ job['number_of_openings'] }} </td>
             {# we give the short list an id because we will change its innerHTML #}
             <td class="text-center" id="in_short_list_{{job['job_identifier']}}">
@@ -186,17 +190,18 @@
         <tr id="{{job['job_identifier']}}" class="collapse">
             <td colspan="7">
                 <div class="row">
-                    <div class="col-md-2">
-                        <p><b>Job ID:</b> <br />{{job['job_identifier']}}</p>
-                        <p><b>Unit Name:</b> <br />{{job['unit_name']}}</p>
-                        <p><b>Disciplines:</b> <br />{{job['discipline']}}</p>
-                        <p><b>Hiring Support:</b> <br />{{job['hiring_support']}}</p>
-                        <p><b>Work Term Support:</b> <br />{{job['work_term_support']}}</p>
-                        <p><b>Apply:</b> <br />{{job['apply']}}</p>
-                        <p><b>Last Day to apply:</b> <br />{{job['last_day_to_apply']}}</p>
-
+                    <div class="col-sm-3 col-md-2">
+                        <p class="col-xs-3 col-sm-12"><b>Job ID:</b> <br />{{job['job_identifier']}}</p>
+                        <p class="col-xs-3 col-sm-12"><b>Unit Name:</b> <br />{{job['unit_name']}}</p>
+                        <p class="col-xs-6 col-sm-12"><b>Disciplines:</b> <br />{{job['discipline']}}</p>
+                        <div class="visible-xs-block"><br /></div>
+                        <p class="col-xs-3 col-sm-12"><b>Hiring Support:</b> <br />{{job['hiring_support']}}</p>
+                        <p class="col-xs-3 col-sm-12"><b>Work Term Supp.:</b> <br />{{job['work_term_support']}}</p>
+                        <p class="col-xs-3 col-sm-12"><b>Apply:</b> <br />{{job['apply']}}</p>
+                        <p class="col-xs-3 col-sm-12"><b>Last Day to apply:</b> <br />{{job['last_day_to_apply']}}</p>
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-sm-9 col-md-10">
+
                         {{job['summary']|safe}}<br><br> <p><b>Comments: </b>{{job['comments']}}</p>
                     </div>
                 </div>

@@ -21,36 +21,37 @@
         <h1>Analytics</h1>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6">
             <h2 class="text-center"><sup>Jobs</sup>/<sub>Programming Language</sub></h2>
             <canvas id="language" width="100%" height="50%"></canvas>
         </div>
-        <div class="col-md-6">
+        <div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-6">
             <h2 class="text-center"><sup>Jobs</sup>/<sub>Keyword in Job Title</sub></h2>
             <canvas id="keywords" width="100%" height="50%"></canvas>
         </div>
     </div>
     <br /><br />
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-xs-6 col-sm-4">
             <h2 class="text-center"><sup>Jobs</sup>/<sub>Faculty</sub></h2>
             <canvas id="myChart" width="80%" height="80%"></canvas>
             <div id="js-legend" class="chart-legend"></div>
         </div>
-        <div class="col-md-4">
-            <h2 class="text-center"><sup>Jobs</sup>/<sub>City</sub></h2>
-            <canvas id="myChart2" width="80%" height="80%"></canvas>
-            <div id="js-legend2" class="chart-legend"></div>
-        </div>
-        <div class="col-md-4">
+         <div class="col-xs-6 col-sm-offset-0 col-sm-4 col-sm-push-4">
             <h2 class="text-center"><sup>Jobs</sup>/<sub>Level</sub></h2>
             <canvas id="myChart3" width="80%" height="80%"></canvas>
             <div id="js-legend3" class="chart-legend"></div>
         </div>
-    </div>
+        <div class="col-xs-pull-3 col-xs-6 col-sm-pull-4 col-sm-4">
+            <h2 class="text-center"><sup>Jobs</sup>/<sub>City</sub></h2>
+            <canvas id="myChart2" width="80%" height="80%"></canvas>
+            <div id="js-legend2" class="chart-legend"></div>
+        </div>
 
+    </div>
+<br /><br />
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-sm-4">
             <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">J</span>obs:<span>
         <h3 style="display:inline; "><span class="label label-success" style="background-color:black; color:yellow">
         {{analytics_total_numbers_count[0]['total_jobs']}}
@@ -58,16 +59,16 @@
     </span></h4>
         </div>
 
-        <div class="col-md-4">
-            <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">U</span>nique <span class="lead">L</span>ocations:<span>
+        <div class="col-sm-4">
+            <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">L</span>ocations:<span>
          <h3 style="display:inline; "><span class="label label-success" style="background-color:black; color:yellow">
         {{analytics_total_numbers_count[1]['total_unique_location']}}
             </span></h3>
            </span></h4>
         </div>
 
-        <div class="col-md-4">
-            <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">U</span>nique <span class="lead">E</span>mployers: <span>
+        <div class="col-sm-4">
+            <h4 class="text-center"><span class="lead">T</span>otal <span class="lead">E</span>mployers: <span>
             <h3 style="display:inline; "><span class="label label-success" style="background-color:black; color:yellow">
             {{analytics_total_numbers_count[2]['total_unique_employer']}}
             </span></h3>
@@ -79,52 +80,52 @@
         <h1>Exports</h1>
     </div>
     <div class="row">
-        <div class="col-md-3 text-center">
+        <div class="col-xs-6 col-sm-3 text-center">
 
-            <div class="col-md-6">
+            <div class="col-xs-6">
                 <a href="/exportHtml/0" target="_blank" >
-                    <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:100%;">
+                    <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:80%;">
                 </a>
                 <h4>1-1000</h4>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-6">
                     <a href="/exportHtml/1000" target="_blank">
-                        <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:100%;">
+                        <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:80%;">
                     </a>
                     <h4>1001-2000</h4>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-6">
                     <a href="/exportHtml/2000" target="_blank">
-                        <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:100%;">
+                        <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:80%;">
 
                     </a>
                     <h4>2001-3000</h4>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-6">
                     <a href="/exportHtml/3000" target="_blank">
-                        <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:100%;">
+                        <img src="{{ url_for('static', filename = 'Html_logo.png') }}" style="width:80%;">
 
                     </a>
                     <h4>3001 - End</h4>
                 </div>
             </div>
 
-        <div class="col-md-3 text-center">
+        <div class="col-xs-6 col-sm-3 text-center">
             <a href="/exportCsv" target="_blank">
                     <img src="{{ url_for('static', filename = 'csv_logo.png') }}" style="width:100%;">
 
                 </a>
         </div>
-        <div class="col-md-3 text-center">
+        <div class="col-xs-6 col-sm-3 text-center">
             <a href="/exportTxt" target="_blank">
                 <img src="{{ url_for('static', filename = 'txt_logo.png') }}" style="width:100%;">
             </a>
         </div>
 
-        <div class="col-md-3 text-center">
+        <div class="col-xs-6 col-sm-3 text-center">
 
             <a href="/exportJson" target="_blank">
-                    <img src="{{ url_for('static', filename = 'json_logo.png') }}" style="width:100%;">
+                    <img src="{{ url_for('static', filename = 'json_logo.png') }}" style="width:80%;">
             </a>
         </div>
     </div>

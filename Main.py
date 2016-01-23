@@ -366,7 +366,7 @@ def add_to_short_list():
     #search for the job with employer name and job title
 
     session = requests.Session()
-    params = {'userid': 'l43cheng', 'pwd':'IAa@132@@@'} #timezoneOffset and submit are unnecessary but also submitted
+    params = {'userid': 'l43cheng', 'pwd':'IAaW132@@@'} #timezoneOffset and submit are unnecessary but also submitted
 
     #===============login
     s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
@@ -450,7 +450,7 @@ def remove_from_short_list():
 
     job_identifier = request.json['job_identifier']
     session = requests.Session()
-    params = {'userid': 'l43cheng', 'pwd':'IAaW132!!!'} #timezoneOffset and submit are unnecessary but also submitted
+    params = {'userid': 'l43cheng', 'pwd':'IAaW132@@@'} #timezoneOffset and submit are unnecessary but also submitted
 
     #===============login
     s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
