@@ -170,14 +170,15 @@
             <td class="text-center"> {{ job['languages'] }} </td>
             <td class="text-center"> {{ job['level'] }} </td>
             <td class="text-center"> {{ job['number_of_openings'] }} </td>
-            <td class="text-center">
+            {# we give the short list an id because we will change its innerHTML #}
+            <td class="text-center" id="in_short_list_{{job['job_identifier']}}">
             {% if job['in_short_list'] == 'N' %}
-                <button type="button" class="btn btn-default btn-sm" onclick="addToShortList('{{job['job_title']}}', '{{job['employer_name']}}', '{{job['job_identifier']}}'") >
+                <button type="button" class="btn btn-default btn-sm" onclick="addToShortList('{{job['job_title']}}', '{{job['employer_name']}}', '{{job['job_identifier']}}')" >
                 <span style="color:green" class="glyphicon glyphicon-plus"></span> Add
                 </button>
                 {% else %}
-                 <button type="button" class="btn btn-default btn-sm" onclick="removeFromShortList('{{job['job_identifier']}}')" >
-                <span style="color:red" class="glyphicon glyphicon glyphicon-minus"></span> Remove
+                 <button type="button" class="btn btn-default btn-sm" onclick="removeFromShortList('{{job['job_identifier']}}', '{{job['job_title']}}', '{{job['employer_name']}}')" >
+                <span style="color:red" class="glyphicon glyphicon-minus"></span> Remove
                 </button>
                  {% endif %}
             </td>
@@ -249,19 +250,23 @@ function openModal() {
 
 function addToShortList(job_title, employer_name, job_identifier) {
 
+    console.log('addToShortList is called')
     event.preventDefault();
     data = { 'job_title' : job_title,
             'employer_name': employer_name,
             'job_identifier': job_identifier };
 
+    console.log('the value of employer_name is' + employer_name);
     $.ajax({
         type : "POST",
         url : "/addToShortList",
         data: JSON.stringify(data),
         contentType: 'application/json;charset=UTF-8',
-        success : function() {
-            alert('HOOORAY, SUCCESSFULLY POSTED TO JOB');
+        success : function(data) {
+            alert(data['a']);
 
+            //now we change the short list button, yes, we do this manually
+           document.getElementById('in_short_list_' + job_identifier).innerHTML = '<button type="button" class="btn btn-default btn-sm" onclick="removeFromShortList('   + "'" + job_identifier+ "','" + job_title +"','" + employer_name + "'" + ')"><span style="color:red" class="glyphicon glyphicon-minus"></span>Remove</button>';
         },
         error: function() {
             alert('Connection broken. Something funky happened');
@@ -269,11 +274,12 @@ function addToShortList(job_title, employer_name, job_identifier) {
     });
 }
 
-function removeFromShortList(job_identifier) {
+function removeFromShortList(job_identifier, job_title, employer_name) {
 
     console.log('removeFromShortList is called');
     event.preventDefault();
         data = { 'job_identifier': job_identifier };
+        console.log(job_title);
 
         $.ajax({
             type : "POST",
@@ -282,10 +288,11 @@ function removeFromShortList(job_identifier) {
             contentType: 'application/json;charset=UTF-8',
             success : function() {
                 alert('HOOORAY, SUCCESSFULLY REMOVED FROM SHORLIST');
-
+                console.log(job_title);
+                document.getElementById('in_short_list_' + job_identifier).innerHTML = '<button type="button" class="btn btn-default btn-sm" onclick="addToShortList(' + "'" + job_title + "','" + employer_name + "','" + job_identifier + "')" + '" ><span style="color:green" class="glyphicon glyphicon-plus"></span>Add</button>'
             },
             error: function() {
-                alert('Connection broken. Something funky happened');
+                alert('Connection broken. Something funky happened. ');
             }
         });
 }

@@ -1,0 +1,60 @@
+This file stores information about the jobs you wanted to short list. 
+You can use this file as Plan B - manually shortlisting jobs in JobMine - in case there's a bug with EZSearch's Add to and Remove from Shortlist buttons
+
+=================SUCCESSFUL=================
+Software Developer	Neptec Design Group	00285783
+======================================================================
+
+=================SUCCESSFUL=================
+Quality Assurance Specialist	The Pythian Group	00285829
+=======================================================================================REQUIRES ATTENTION =================Programmer	Acronym Software Inc	00285035
+=======================================================================================REQUIRES ATTENTION =================undefined	undefined	00285783
+=======================================================================================REQUIRES ATTENTION =================undefined	undefined	00285783
+======================================================================
+
+=================SUCCESSFUL=================
+QA Specialist for Adminiscope	The Pythian Group	00285825
+=======================================================================================REQUIRES ATTENTION =================undefined	undefined	00285825
+======================================================================
+
+=================SUCCESSFUL=================
+Software Engineering - Maps POI	Apple Inc	00285343
+======================================================================
+
+=================SUCCESSFUL=================
+Software Engineering	Capcom	00284081
+======================================================================
+
+=================SUCCESSFUL=================
+Software Development Engineering	A Thinking Ape	00282013
+======================================================================
+
+=================SUCCESSFUL=================
+Data Analytics Programmer	Big Blue Bubble Inc	00281451
+======================================================================
+
+=================SUCCESSFUL=================
+Software Developer (Game Developer)	Big Viking Games	00280403
+======================================================================
+
+=================SUCCESSFUL=================
+Software Development Engineering	A Thinking Ape	00282013
+======================================================================
+
+=================SUCCESSFUL=================
+Data Analytics Programmer	Big Blue Bubble Inc	00281451
+======================================================================
+
+=================SUCCESSFUL=================
+Software Development Engineering	A Thinking Ape	00282013
+======================================================================
+
+=================SUCCESSFUL=================
+Software Development Engineering	A Thinking Ape	00282013
+======================================================================
+
+=================SUCCESSFUL=================
+Game Programmer	Big Blue Bubble Inc	00281449
+=======================================================================================REQUIRES ATTENTION =================Co-op Developer	BlueSun Inc	00284581
+=======================================================================================REQUIRES ATTENTION =================Co-op Developer	BlueSun Inc	00284581
+======================================================================

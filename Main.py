@@ -16,6 +16,10 @@ app = Flask(__name__)
 @app.route('/')
 def welcome():
 
+    with open("ShortListJobs.txt", "w") as myfile:
+        myfile.write("This file stores information about the jobs you wanted to short list. \n"
+                     "You can use this file as Plan B - manually shortlisting jobs in JobMine - in case there's a bug with EZSearch's Add to and Remove from Shortlist buttons" )
+    myfile.close()
 
     '''
     connection=sqlite3.connect("jobs.db")
@@ -348,6 +352,8 @@ def update_jobs():
 @app.route('/addToShortList', methods=['POST'])
 def add_to_short_list():
 
+
+
     job_title = request.json['job_title']
     #job_title = 'Manufacturing Design'
 
@@ -360,7 +366,7 @@ def add_to_short_list():
     #search for the job with employer name and job title
 
     session = requests.Session()
-    params = {'userid': 'l43cheng', 'pwd':'IAaW132@@@'} #timezoneOffset and submit are unnecessary but also submitted
+    params = {'userid': 'l43cheng', 'pwd':'IAa@132@@@'} #timezoneOffset and submit are unnecessary but also submitted
 
     #===============login
     s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
@@ -370,11 +376,31 @@ def add_to_short_list():
     #since after we check Approved, Posted, and Cancelled, then every other job must be in Apps Avail. I will do complementary counting by first
     #setting all to Apps Avail
 
-    searchForJob('APPR',employer_name,job_title,job_identifier, session)
-    searchForJob('APPA',employer_name,job_title,job_identifier, session)
-    searchForJob('CANC',employer_name,job_title,job_identifier, session)
+    appr = searchForJob('APPR',employer_name,job_title,job_identifier, session)
+    appa = searchForJob('APPA',employer_name,job_title,job_identifier, session)
+    post = searchForJob('POST',employer_name,job_title,job_identifier, session)
 
-    return jsonify(a = 'nothing')
+    with open("AddingToShortList.txt", "a") as myfile:
+        myfile.write(employer_name + "\r\t")
+    myfile.close()
+
+
+    if (appr == True) or (appa == True) or (post == True):
+        connection=sqlite3.connect("jobs.db")
+        c = connection.cursor()
+        c.execute("UPDATE AllJobs SET in_short_list = 'Y' WHERE job_identifier = '" + job_identifier + "'" )
+        connection.commit()
+        connection.close()
+
+        with open("ShortListJobs.txt", "a") as myfile:
+            myfile.write("\n\n=================SUCCESSFUL=================\n" + job_title + "\t" + employer_name + "\t" + job_identifier + "\n======================================================================")
+        myfile.close()
+        return jsonify(a = 'Found')
+    else:
+        with open("ShortListJobs.txt", "a") as myfile:
+            myfile.write("=================REQUIRES ATTENTION =================" + job_title + "\t" + employer_name + "\t" + job_identifier + "\n======================================================================")
+        myfile.close()
+        return jsonify(a = 'Not Found')
 
 def searchForJob(apply, employer_name, job_title, job_identifier, session):
 
@@ -400,6 +426,8 @@ def searchForJob(apply, employer_name, job_title, job_identifier, session):
     #print(s.text)
 
     bsObj = BeautifulSoup(s._content, "html.parser")
+    print(bsObj.find("span", {"id" : "UW_CO_JOBRES_VW_UW_CO_JOB_ID$0"}).get_text())
+
     if (bsObj.find("span", {"id" : "UW_CO_JOBRES_VW_UW_CO_JOB_ID$0"}).get_text() == job_identifier):
 
         print('found! The job_identifier is:' + job_identifier)
@@ -413,16 +441,16 @@ def searchForJob(apply, employer_name, job_title, job_identifier, session):
 
         m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL", paramsForShortList)
         print('just finished adding')
-
+        return True
     else:
-        print('not found')
+        return False
 
 @app.route('/removeFromShortList', methods=['POST'])
 def remove_from_short_list():
 
     job_identifier = request.json['job_identifier']
     session = requests.Session()
-    params = {'userid': 'l43cheng', 'pwd':'IAaW132@@@'} #timezoneOffset and submit are unnecessary but also submitted
+    params = {'userid': 'l43cheng', 'pwd':'IAaW132!!!'} #timezoneOffset and submit are unnecessary but also submitted
 
     #===============login
     s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
