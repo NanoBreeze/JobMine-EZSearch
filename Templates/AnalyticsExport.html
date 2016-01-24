@@ -1,3 +1,22 @@
+{#
+This file is part of JobMine EZSearch.
+
+JobMine EZSearch is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+JobMine EZSearch is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
+
 
 {% extends "TemplateLayout.html" %}
 {% block body %}
@@ -77,7 +96,7 @@
     </div>
 
     <div class="page-header">
-        <h1>Exports</h1>
+        <h1>Downloads</h1>
     </div>
     <div class="row">
         <div class="col-xs-6 col-sm-3 text-center">
@@ -144,8 +163,8 @@
 
 
 //jobs per language
- x = [];
- y = [];
+var x = [];
+var y = [];
 {% for language in analytics_languages_count %}
     x.push('{{language['language']}}')
     y.push({{language['count']}})
@@ -257,11 +276,6 @@ var myChart = new Chart(ctx).Doughnut(data, options);
 
 document.getElementById('js-legend').innerHTML = myChart.generateLegend();
 
-
-/*
-var faculty = document.getElementById("faculty").getContext("2d");
-new Chart(faculty).Doughnut(data);
-*/
 
 
 
@@ -404,13 +418,6 @@ var ctx = document.getElementById("myChart3").getContext("2d");
 var myChart = new Chart(ctx).Doughnut(data, options);
 
 document.getElementById('js-legend3').innerHTML = myChart.generateLegend();
-
-
-
-
-
-
-
 
 
 </script>

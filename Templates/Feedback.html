@@ -1,8 +1,61 @@
+{#
+This file is part of JobMine EZSearch.
+
+JobMine EZSearch is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+JobMine EZSearch is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
 {% extends "TemplateLayout.html" %}
 {% block body %}
 <div class="container">
-     <div class="page-header">
-        <h1>Feedback | Report Bug</h1>
+
+    <div class="row">
+        <div class="col-sm-6">
+               <div class="page-header">
+        <h1>Feedback | Bug</h1>
     </div>
+            We appreciate the time you're taking to give us feedback on JobMine EZSearch or submit a bug.
+
+            <br /><br/>
+
+            Constructive feedback is extremely useful to developers because they show what users expect of the products they’re using.
+            We would like to know your thoughts about Jobmine EZSearch – the good, bad, and ugly – so future improvements and new features are more relevant to you.
+
+            <br /><br />
+
+            <div class="page-header">
+        <h1>Contribute</h1>
     </div>
+
+        JobMine EZSearch still has a long way to go before it can intelligently analyze jobs, or text formats in general (using LIKE ‘%string%’ isn’t quite AI yet).
+        There still remains many features to add to create a text-recognizing engine.
+
+        <br /><br />
+
+        Although few bugs were discovered during testing, legend has it that they are still out there quietly lurking in the darker shadows of code.
+
+        <br /><br />
+        If you would like to contribute to JobMine EZSearch, you can fork the repo on Github:
+            <br/>
+        <a href="https://github.com/NanoBreeze/JobMine-EZSearch">https://github.com/NanoBreeze/JobMine-EZSearch</a>
+
+        </div>
+        <div class="col-sm-6">
+            <iframe src="https://docs.google.com/forms/d/10ZEa7JxrpPWSKeS3B3wDKrD5RVJAJ_rtWlocggQM3tc/viewform?embedded=true" width="100%" height="600px" frameborder="1" marginheight="0" marginwidth="0">Loading...</iframe>
+
+        </div>
+    </div>
+
+</div>
 {% endblock %}

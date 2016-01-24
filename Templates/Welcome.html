@@ -1,3 +1,21 @@
+{#
+This file is part of JobMine EZSearch.
+
+JobMine EZSearch is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+JobMine EZSearch is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,11 +33,13 @@
 <body>
 
 
-<div class="jumbotron">
-    <h1 class="text-center">Welcome to JobMine EZSearch
-        <br />
-        <small class="text-center">A comprehensive tool to help you in your JobMine searches</small>
-    </h1>
+<div class="jumbotron" style="background-color: #191818">
+
+        <div class="text-center">
+        <h1 style="display:inline; color: #A7A7A7">JobMine</h1><img src="{{ url_for('static', filename = 'EZSearch_logo.png') }}" style="width:30%;">
+            <h1 ><small style="color:#2D6D8B">A faster way to search for jobs</small></h1>
+    </div>
+
     <br />
     <div class="container">
         <form action="" method="post" class="form-group">
