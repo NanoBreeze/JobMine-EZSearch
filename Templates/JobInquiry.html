@@ -304,8 +304,8 @@ function removeFromShortList(job_identifier, job_title, employer_name) {
 
 function prioritize_language() {
 
-    user_languages_list = document.getElementById('prioritize_language').value;
-    data = { 'user_languages_list' : user_languages_list }
+    prioritized_languages = document.getElementById('prioritize_language').value;
+    data = { 'prioritized_languages' : prioritized_languages }
 
     $.ajax({
         type : "POST",
@@ -317,11 +317,6 @@ function prioritize_language() {
 
 }
 
-function submitWithOrderBy(orderByParameter){
-    console.log("HEY");
-    document.forms[0].elements.orderByInput.value = orderByParameter
-    document.forms[0].submit();
-}
 
 </script>
 

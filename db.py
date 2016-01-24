@@ -22,6 +22,7 @@ def get_search_data(query):
     """Returns the jobs that match user's search query, custom SQL query or input."""
     print("In filter_by_SQL")
     connection=sqlite3.connect("jobs.db")
+    print(query)
     cur = connection.execute(query)
 
     jobs = []
@@ -35,8 +36,8 @@ def get_search_data(query):
     return jobs
 
 
-def get_csv_data():
-    """Returns all data of every job in database. Used to make a csv file."""
+def get_csv_json_text_data():
+    """Returns all data of every job in database. Used to make csv, json, and text files."""
 
     connection=sqlite3.connect("jobs.db")
     cur = connection.execute('SELECT * FROM AllJobs')
@@ -70,8 +71,27 @@ def get_html_data(offset = 0, limit = 1000):
     return jobs
 
 
+def get_city_count():
+    """Returns a list of the top 10 cities that hire the most students and the number of hiring students."""
+    connection=sqlite3.connect("jobs.db")
+    cur = connection.execute("SELECT * FROM (SELECT COUNT(*) AS Count, location FROM AllJobs GROUP BY Location ORDER BY Count DESC) LIMIT 10")
+
+    jobs = []
+    count_of_jobs = 0
+    for row in cur.fetchall():
+        jobs.append({'count': row[0], 'location1': row[1]})
+        count_of_jobs += row[0]
+
+    total_number_of_jobs = connection.execute("SELECT COUNT(*)  FROM AllJobs").fetchone()[0]
+    jobs.append({'count': total_number_of_jobs - count_of_jobs, 'location1':'other'})
+
+    connection.close()
+
+    return jobs
+
+
 #I feel like this is very bad SQL but it works and I'm not sure what the optimized SQL looks like
-def get_language_count():
+def get_languages_count():
     """Returns the number of jobs that match a language."""
 
     connection=sqlite3.connect("jobs.db")
@@ -107,26 +127,6 @@ def get_language_count():
                  ]
 
     return languages
-
-
-def get_city_count():
-    """Returns a list of the top 10 cities that hire the most students and the number of hiring students."""
-    connection=sqlite3.connect("jobs.db")
-    cur = connection.execute("SELECT * FROM (SELECT COUNT(*) AS Count, location FROM AllJobs GROUP BY Location ORDER BY Count DESC) LIMIT 10")
-
-    jobs = []
-    count_of_jobs = 0
-    for row in cur.fetchall():
-        jobs.append({'count': row[0], 'location1': row[1]})
-        count_of_jobs += row[0]
-
-    total_number_of_jobs = connection.execute("SELECT COUNT(*)  FROM AllJobs").fetchone()[0]
-    jobs.append({'count': total_number_of_jobs - count_of_jobs, 'location1':'other'})
-
-    connection.close()
-
-    return jobs
-
 
 
 def get_faculty_count():
@@ -220,8 +220,8 @@ def get_numbers():
 
 
 #================================================USE THE CURSOR
-class Write:
-    """Writes changes to the database."""
+class AllJobs:
+    """Writes or reads from the database."""
 
     __connection = None
     __cur = None
@@ -232,14 +232,22 @@ class Write:
         self.__connection = sqlite3.connect("jobs.db")
         self.__cur = self.__connection.cursor()
 
-    def execute_query(self, query):
-        """Executes and commits a write operation to the database."""
-        self.__cur.execute(query)
+    def commit_query(self, query, values=None):
+        """Updates the database if values=None, inserts to the database otherwise."""
+        if values is None:
+            self.__cur.execute(query)
+        else:
+            self.__cur.execute(query, values)
         self.__connection.commit()
+
+
+    def get_query(self, query):
+        """Reading from the database. Returns the rows of the query"""
+        return self.__cur.execute(query)
 
     def close_connection(self):
         """Closes the connection."""
-        self.__cconnection.close()
+        self.__connection.close()
 
 
 
