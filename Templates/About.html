@@ -30,7 +30,7 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
 
             <br />
             <div class="col-sm-5">
-                <h4>Current JobMine Search</h4>
+                <h4 id="test3">Current JobMine Search</h4>
                 <p>Imagine you were a .NET developer who wanted to apply to all jobs that require .NET knowledge.
                     <b>How would you go about finding all .NET jobs?</b>
                     Many job titles do not contain the words “.NET” and clicking on every job in Job Inquiry is likely not ideal (learned this the hard way, it was not pretty)
@@ -135,6 +135,44 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
 
             </div>
         </div>
+        <div class="row">
+            <h2 class="text-center">Q&A</h2>
+            <div class="row">
+            <div class="col-sm-6">
+
+                <h4>How do I create my own SQL queries?</h4>
+                SQL Search automatically selects all columns from the table storing the jobs and you can simply type in the WHERE clause to find your queries
+                (eg, location = ‘Toronto’ OR summary LIKE ‘%game%’). You can also press the ? button next to the SQL Search textbox for help on writing SQL queries
+            </div>
+
+            <div class="col-sm-6">
+                <h4>What can I do with the database?</h4>
+                The database contains a table with 14 columns that store information related to JobMine jobs.
+                You can use the data and run analytics, display the jobs in different formats, find patterns in text, or even read through them before going to bed. Liberty exists.
+            </div>
+            </div>
+&nbsp;<br class="visible-xs"/>&nbsp;
+            <div class="row">
+            <div class="col-sm-6">
+                <h4>I have ideas for improvements and found bugs. Who do I contact?</h4>
+                That’s great! You can fork the repository from <a href="https://github.com/NanoBreeze/JobMine-EZSearch">https://github.com/NanoBreeze/JobMine-EZSearch</a>
+                and contribute to the project! You can also send your ideas with this form:
+            </div>
+
+
+            <div class="col-sm-6">
+                <h4>Who made JobMine EZSearch?</h4>
+                A fellow UWaterloo student who manually clicked on hundreds of jobs to find the ones he was looking for. Hopefully, nobody else has to go through that experience again.
+            </div>
+      &nbsp;<br class="hidden-xs"/>&nbsp;
+                </div>
+            <div class="row">
+            <div class="col-sm-6">
+                <h4>What is the meaning of life?</h4>
+                I'm not sure
+            </div>
+        </div>
+            </div>
     </div>
 </div>
 {% endblock %}
