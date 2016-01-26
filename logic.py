@@ -208,8 +208,9 @@ class Shortlist:
     def __init__(self):
         print('in  ShortList constructor')
 
-    def login(self, userid, pwd):
-        params = {'userid': str(userid), 'pwd': str(pwd) }
+    def login(self):
+        credentials = db.get_credentials()
+        params = {'userid': str(credentials[0]), 'pwd': str(credentials[1]) }
         session = requests.Session()
         session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
         return session
@@ -243,14 +244,12 @@ class Shortlist:
             if (short_list_job_identifier == job_identifier):
                 print('found a match!')
                 #delete the job on the shortlist that matches the same id as the selected job
-                paramsForDeleteShortListJob = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_STUJOBLST$delete$' + str(i) + '$$0',
-                                                'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k='}
+                paramsForDeleteShortListJob = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_STUJOBLST$delete$' + str(i) + '$$0'}
                 m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL", paramsForDeleteShortListJob)
 
                 print('finished deleting and about to save')
 
-                paramsForSave = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'#ICSave',
-                                  'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k='}
+                paramsForSave = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'#ICSave'}
 
                 m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL ", paramsForSave)
 
@@ -401,7 +400,11 @@ def updateLanguages(prioritized_languages):
         #now that we finished finding the languages included in the application, we update the language column of the job to contain these languages
         database.commit_query("UPDATE AllJobs SET languages = '" + string_of_included_languages + "' WHERE job_identifier = '" + row[0] + "'")
 
+    database.commit_query("UPDATE Miscellaneous SET language_preference = '" + prioritized_languages + "'")
     database.close_connection()
+
+def get_prioritized_languages():
+    return db.get_prioritized_languages()
 
 def submit(filters):
     query='SELECT * FROM AllJobs WHERE '
@@ -466,11 +469,12 @@ def append_other_queries(other_filters, query):
 
 
 
-def login(userid, pwd):
-        params = {'userid': str(userid), 'pwd': str(pwd) }
-        session = requests.Session()
-        session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
-        return session
+def login():
+    credentials = db.get_credentials()
+    params = {'userid': str(credentials[0]), 'pwd': str(credentials[1]) }
+    session = requests.Session()
+    session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)
+    return session
 
 #update jobs, may change each job's Apply and last day to apply values. All jobs either in Approved, Posted, Cancelled, or Application Available
 #1. Look in Approved. Maybe dates in approved can change, or posted jobs can go into approved seciont
@@ -484,17 +488,11 @@ def updateJobs():
     database = db.AllJobs()
 
     #===============loginv to JobMine
-    session = login('l43cheng', 'IAaW132@@@')
+    session = login()
 
     #=================go to Job Inquiry, the get method must exist before using a post
     session.get("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL?pslnkid=UW_CO_JOBSRCH_LINK&amp;FolderPath=PORTAL_ROOT_OBJECT.UW_CO_JOBSRCH_LINK&amp;IsFolder=false&amp;IgnoreParamTempl=FolderPath%2cIsFolder&amp;PortalActualURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentProvider=WORK&amp;PortalCRefLabel=Job%20Inquiry&amp;PortalRegistryName=EMPLOYEE&amp;PortalServletURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsp%2fES%2f&amp;PortalURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2f&amp;PortalHostNode=WORK&amp;NoCrumbs=yes&amp;PortalKeyStruct=yes")
 
-
-    #since after we check Approved, Posted, and Cancelled, then every other job must be in Apps Avail. I will do complementary counting by first
-    #setting all to Apps Avail
-    database.commit_query("UPDATE AllJobs SET apply = 'APPS AVAIL'")
-
-    print('Finished setting all apply to APPS AVAIL')
 
     examineJobStatus('APPR', True, database, session)
     print('Finished APPROVED page')
@@ -504,6 +502,9 @@ def updateJobs():
 
     examineJobStatus('CANC', False, database, session)
     print('Finished CANCELLED page')
+
+    #examineJobStatus('APPA', True, database, session)
+    print('Finished Apps Avail page')
 
     database.close_connection
 
@@ -577,14 +578,6 @@ def examineJobStatus(job_status, view_all, database, session):
                                             new_job['hiring_support'], new_job['work_term_support'], new_job['comments'],
                                             new_job['summary'], new_job['apply'], new_job['last_day_to_apply']))
 
-                '''
-                c.execute("INSERT INTO AllJobs(job_identifier, job_title, employer_name, unit_name, location, number_of_openings, discipline, level, hiring_support, work_term_support, comments, summary, apply, last_day_to_apply) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                                           (new_job['job_identifier'], new_job['job_title'], new_job['employer_name'], new_job['unit_name'],
-                                            new_job['location'], new_job['number_of_openings'], new_job['discipline'], new_job['level'],
-                                            new_job['hiring_support'], new_job['work_term_support'], new_job['comments'],
-                                            new_job['summary'], new_job['apply'], new_job['last_day_to_apply']))
-                connection.commit()
-                '''
         # going to the next section
         paramsForSearch = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165', 'UW_CO_JOBSRCH_UW_CO_ADV_DISCP1' : '', 'ICAction':'UW_CO_JOBRES_VW$fdown$0',
                             'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': job_status}
@@ -594,8 +587,6 @@ def examineJobStatus(job_status, view_all, database, session):
 
 #this function finds all the details associated with a job, eg, job_identifier, employer_name, etc. It uses BeautifulSoup
 def extract_details(bsObj,i,job_status, session):
-
-    new_job = []
 
     job_identifier = bsObj.find("span", {"id" : "UW_CO_JOBRES_VW_UW_CO_JOB_ID$" + str(i)}).get_text()
     job_title = bsObj.find("a", {"id": "UW_CO_JOBTITLE_HL$" + str(i)} ).get_text()

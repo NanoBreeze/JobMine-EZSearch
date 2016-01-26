@@ -1,0 +1,82 @@
+{#
+This file is part of JobMine EZSearch.
+
+JobMine EZSearch is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+JobMine EZSearch is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
+
+#}
+
+{% extends "TemplateLayout.html" %}
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h1>Technology</h1>
+    </div>
+    JobMine EZSearch is a web application created with Python’s Flask framework.
+    The frontend is built with Bootstrap, jQuery (handles AJAX calls), Charts.js, and Bootstrap Tour.
+    The backend uses Requests to connect to JobMine, Beautiful Soup to parse JobMine’s HTML, and SQLite to store job information.
+    JobMine EZSearch’s core feature is the capacity to programmatically GET and POST to JobMine, which Fiddler played an instrumental role in by determining the necessary query strings and urls.
+    <div class="page-header">
+        <h1>Github</h1>
+    </div>
+            You can fork the repository for JobMine EZSearch at <a href="https://github.com/NanoBreeze/JobMine-EZSearch">https://github.com/NanoBreeze/JobMine-EZSearch</a>
+
+    <div class="page-header">
+        <h1>Structure</h1>
+
+    </div>
+     The code started out to be spaghetti code but after it proved to be indigestible, we (tried to) changed the architecture to look more like:<br />
+        <img src="{{ url_for('static', filename = 'structure_EZSearch.png') }}" />
+    <div class="page-header">
+        <h1>Searching with Custom Queries</h1>
+        </div>
+        All job information are stored in the AllJobs table of jobs.db. There are currently 15 columns you can search upon.<br />
+        <table class="table text-center">
+            <thead>
+            <tr>
+                <th class="text-center">Column Name</th>
+                <th class="text-center">Example</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td>job_identifier</td><td>00285403</td></tr>
+            <tr><td>job_title</td><td>Aerial Robotics Developer</td></tr>
+            <tr><td>employer_name</td><td>Apple Inc</td></tr>
+            <tr><td>unit_name (most jobs leave this blank)</td><td>Head Office</td></tr>
+            <tr><td>location</td><td>San Francisco, CA, USA</td></tr>
+            <tr><td>number_of_openings</td><td>2</td></tr>
+            <tr><td>level</td><td>Junior, Intermediate</td></tr>
+            <tr><td>discipline</td><td>ENG-Computer</td></tr>
+            <tr><td>hiring_support</td><td>Lewis,Kim</td></tr>
+            <tr><td>work_term_support</td><td>Mercer,Zac</td></tr>
+            <tr><td>comments</td><td>8 Month Consecutive Work Term Required</td></tr>
+            <tr><td>summary</td><td>blah blah blah</td></tr>
+            <tr><td>languages</td><td>C++</td></tr>
+            <tr><td>apply</td><td>Four options: APPS AVAIL, POSTED, CANCELLED, APPROVED</td></tr>
+            <tr><td>last_day_to_apply</td><td>25 JAN 2016</td></tr>
+            <tr><td>in_short_list</td><td>Y</td></tr>
+
+            </tbody>
+        </table>
+        The general format for directly columns is <kbd>columnName = ‘value’</kbd>. Eg, typing in <code>employer_name = ‘Apple Inc’</code> will find all jobs where Apple Inc is the employer. <br /><br />
+        The general format for partial matching is <kbd>columnName LIKE ‘%partialValue%’</kbd>. Eg, typing in <code>employer_name LIKE ‘%ppl%’</code> will find all employers that have the text ppl in their names. Apple Inc will also be found. <br /><br />
+
+        We can combine matchings with <kbd>AND</kbd> or <kbd>OR</kbd>. Eg, <code>languages LIKE ‘%C++%’ AND location = ‘Toronto’</code> finds all jobs that contain C++ (assuming the languages column includes an entry of C++) and are in Toronto. Similarly, <code>languages LIKE ‘%C++%’ OR location = ‘Toronto’</code> finds all jobs that contain C++  or are in Toronto.<br /><br />
+        We can also order jobs by alphabetical/numeric order with <kbd>ORDER BY columnName ASC</kbd> or <kbd>ORDER BY columnName DESC</kbd>. Eg, <code>location = ‘Vancouver’ ORDER BY number_of_openings DESC</code> will find all jobs located in Vancouver and display these jobs starting with the one with the most number of openings.
+
+        <br />
+        <br />
+        You can also view the jobs stored in the database by downloading <a href="http://sqlitebrowser.org/">SQLite Browser</a> and opening jobs.db.
+
+</div>
+{% endblock %}

@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from flask import Blueprint, Flask, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify
 
 import logic
 
@@ -36,7 +36,7 @@ def submit():
                     'employer_name' : request.form['employer_name'],
                     'languages' : request.form['languages'],
                     }
-    print('going into intialize_level_filters(filters)')
+    print('going into initialize_level_filters(filters)')
 
     try:
         if request.form['junior']:
@@ -61,8 +61,8 @@ def submit():
 
 
     jobs = logic.submit(filters)
-
-    return render_template("JobInquiry.html", jobs = jobs, filter_words = filters)
+    prioritized_languages = logic.get_prioritized_languages()
+    return render_template("JobInquiry.html", jobs = jobs, filter_words = filters, prioritized_languages = prioritized_languages)
 
 
 
@@ -85,7 +85,7 @@ def remove_from_short_list():
     job_identifier = request.json['job_identifier']
 
     shortlist = logic.Shortlist()
-    session = shortlist.login('l43cheng', 'IAaW132@@@')
+    session = shortlist.login()
     shortlist.remove_from_shortlist(job_identifier, session)
 
     return jsonify (a = 'nothing')
@@ -98,7 +98,7 @@ def add_to_short_list():
     job_identifier = request.json['job_identifier']
 
     shortlist = logic.Shortlist()
-    session = shortlist.login('l43cheng', 'IAaW132@@@')
+    session = shortlist.login()
     is_successful = shortlist.add_to_shortlist(employer_name, job_title, job_identifier, session)
 
     if is_successful:
@@ -108,7 +108,7 @@ def add_to_short_list():
 
 
 
-@posts.route('/update_jobs')
+@posts.route('/update_jobs', methods= ['POST'])
 def update_jobs():
     logic.updateJobs()
     return jsonify(a = 'nothing')

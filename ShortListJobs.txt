@@ -1,2 +1,0 @@
-This file stores information about the jobs you wanted to short list. 
-You can use this file as Plan B - manually shortlisting jobs in JobMine - in case there's a bug with EZSearch's Add to and Remove from Shortlist buttons

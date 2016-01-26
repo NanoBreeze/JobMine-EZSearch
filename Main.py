@@ -53,7 +53,9 @@ def job_inquiry():
                     'senior': 'senior' }
 
     jobs = []
-    return render_template("JobInquiry.html", jobs = jobs, filter_words = filter_words)
+    prioritized_languages = logic.get_prioritized_languages()
+
+    return render_template("JobInquiry.html", jobs = jobs, filter_words = filter_words, prioritized_languages = prioritized_languages)
 
 
 @app.route('/analyticsExport')
@@ -71,10 +73,10 @@ def analytics_export():
                            analytics_job_containing_keywords_count = analytics.get_keywords_count()
                            )
 
-@app.route('/about')
+@app.route('/docs')
 def docs():
     """Displays the documentation page"""
-    return render_template("About.html")
+    return render_template("Docs.html")
 
 @app.route('/feedback')
 def feedback():

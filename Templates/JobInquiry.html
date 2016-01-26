@@ -125,7 +125,8 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
                         </div>
                         <div class="col-sm-6">
                             <label for="discipline">Discipline</label>
-                            <input type="text" class="form-control" id="discipline" name="discipline" placeholder="ENG-Computer, ENG-Electrical" value="{{ filter_words['discipline'] }}" />
+                            <input  type="text" class="form-control" id="discipline" name="discipline" placeholder="ENG-Computer, ENG-Electrical" value="{{ filter_words['discipline'] }}" />
+                            <button type="button" class="btn btn-primary" onclick="updateJobs()">Update Jobs</button>
                         </div>
                     </div>
                     <br /><br />
@@ -240,11 +241,10 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
                 <button type="button" class="btn btn-default pull-right" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <label>The "Languages" column displays up to four languages shown in the tab. There are a gadrillion languages
-                    so how do we determine which ones to shown in the "Languages" column? The "Languages" column tab will
-                    show the first four languages that are found on your list, in order of the items you placed. The update operation
+                <label>There are a gadrillion languages. How do we determine which ones to shown in the "Languages" column? Enter below the languages in order of decreasing importance and after the update,
+                    the "Languages" column wil show the first four languages that are found on your list. The update operation
                     can take a while. You can separate languages with a ",":
-                    <input type="text" class="form-control" id="prioritize_language" value = "C,C++,.NET,C#,Java,Android,Linux,Apache,SQL,Ruby,Python,Javascript,ASP,MATLAB,iOS"/>
+                    <input type="text" class="form-control" id="prioritize_language" value = "{{prioritized_languages}}"/>
                 </label>
                 <button type="button" class="btn btn-default" onclick="prioritize_language()">Update</button>
             </div>
@@ -261,7 +261,6 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
 <script type="text/javascript">
 
 function openModal() {
-    console.log('hey');
 
     $('#language_modal').modal({
         show: true,
@@ -333,7 +332,15 @@ function prioritize_language() {
     });
 }
 
-
+function updateJobs()
+{
+console.log('inside updateJobs()');
+    $.ajax({
+        type : "POST",
+        url : "/update_jobs",
+        contentType: 'application/json;charset=UTF-8'
+    });
+}
 </script>
 
 

@@ -16,9 +16,33 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import requests
-import sqlite3
 from bs4 import BeautifulSoup
+import sqlite3
 
+def initialize_database():
+    """Initializes jobs.db"""
+    with sqlite3.connect("jobs.db") as connection:
+        c = connection.cursor()
+        c.execute("CREATE TABLE AllJobs(job_identifier TEXT, job_title TEXT, employer_name TEXT, unit_name TEXT, location TEXT, number_of_openings INTEGER, level TEXT, discipline TEXT, hiring_support TEXT, work_term_support TEXT, comments TEXT, summary TEXT, languages TEXT, apply TEXT, last_day_to_apply TEXT, in_short_list TEXT )")
+
+        c.execute("CREATE TABLE Miscellaneous(userid TEXT, pwd TEXT, language_preference TEXT)")
+        connection.commit()
+    connection.close()
+
+def prompt_credentials():
+    """Asks user for credentials. Store credentials in the table Miscellaneous"""
+    print("Your credentials will be stored in the Miscellaneous table in jobs.db. They are used to connect to JobMine to get jobs and add/remove jobs from the Short List.")
+    userid = input("Please enter your userid: ")
+    pwd = input("Please enter your password: ")
+
+    connection=sqlite3.connect("jobs.db")
+    c = connection.cursor()
+    c.execute("INSERT INTO Miscellaneous(userid, pwd, language_preference) VALUES(?,?,?)",
+                                         (userid, pwd, "C,C++,.NET,C#,Java,Android,Linux,Apache,SQL,Ruby,Python,Javascript,ASP,MATLAB,iOS, Node, ALM, Perl, PHP, AutoCAD, PCB"))
+    connection.commit()
+    connection.close()
+
+    return [userid, pwd]
 
 
 #get all job at the start of the program
@@ -70,8 +94,10 @@ def getJobs(job_status,view_all):
             employer_name = bsObj.find("span", {"id": "UW_CO_JOBRES_VW_UW_CO_PARENT_NAME$" + str(i)}).get_text()
             unit_name = bsObj.find("span", {"id": "UW_CO_JOBRES_VW_UW_CO_EMPLYR_NAME1$" + str(i)}).get_text()
             location = bsObj.find("span", {"id": "UW_CO_JOBRES_VW_UW_CO_WORK_LOCATN$" + str(i)}).get_text()
-            number_of_openings = int(bsObj.find("span", {"id": "UW_CO_JOBRES_VW_UW_CO_OPENGS$" + str(i)}).get_text())
-
+            try:
+                number_of_openings = int(bsObj.find("span", {"id": "UW_CO_JOBRES_VW_UW_CO_OPENGS$" + str(i)}).get_text())
+            except:
+                number_of_openings = 1
             #we only examine approved and posted jobs
             apply=''
             if (job_status == 'APPR'):
@@ -103,8 +129,8 @@ def getJobs(job_status,view_all):
             summary = summary.replace(r'\t', '')
 
             print(summary)
-            c.execute("INSERT INTO AllJobs(job_identifier, job_title, employer_name, unit_name, location, number_of_openings, discipline, level, hiring_support, work_term_support, comments, summary, apply, last_day_to_apply, in_short_list) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                                           (job_identifier, job_title, employer_name, unit_name, location, number_of_openings, discipline, level, hiring_support, work_term_support, comments, summary, apply, last_day_to_apply, 'N'))
+            c.execute("INSERT INTO AllJobs(job_identifier, job_title, employer_name, unit_name, location, number_of_openings, level, discipline, hiring_support, work_term_support, comments, summary, apply, last_day_to_apply, in_short_list) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                           (job_identifier, job_title, employer_name, unit_name, location, number_of_openings, level, discipline, hiring_support, work_term_support, comments, summary, apply, last_day_to_apply, 'N'))
             connection.commit()
 
 
@@ -119,11 +145,24 @@ def getJobs(job_status,view_all):
 
 
 
+
+
+#make database to store jobs
+initialize_database()
+
+#creates file that will store all jobs
+with open("ShortListJobs.txt", "w") as myfile:
+    myfile.write("\n=============================Jobs Added To Short List=============================")
+myfile.close()
+
+
+credentials = prompt_credentials()
+
 connection=sqlite3.connect("jobs.db")
 c = connection.cursor()
 
 session = requests.Session()
-params = {'userid': 'l43cheng', 'pwd':'IAaW132@@@'} #timezoneOffset and submit are unnecessary but also submitted
+params = {'userid': str(credentials[0]), 'pwd': str(credentials[1])} #timezoneOffset and submit are unnecessary but also submitted
 
 #===============login
 s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd=ENG&sessionId= ', params)

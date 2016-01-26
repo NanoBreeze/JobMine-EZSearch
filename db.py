@@ -216,7 +216,22 @@ def get_numbers():
     return total_numbers
 
 
+def get_credentials():
+    connection=sqlite3.connect("jobs.db")
+    cur = connection.execute("SELECT userid, pwd  FROM Miscellaneous").fetchone()
 
+    credentials = [cur[0], cur[1]]
+
+    connection.close()
+
+    return credentials
+
+def get_prioritized_languages():
+    connection=sqlite3.connect("jobs.db")
+    cur = connection.execute("SELECT language_preference FROM Miscellaneous").fetchone()[0]
+    connection.close()
+
+    return cur
 
 
 #================================================USE THE CURSOR
@@ -248,11 +263,6 @@ class AllJobs:
     def close_connection(self):
         """Closes the connection."""
         self.__connection.close()
-
-
-
-
-
 
 
 

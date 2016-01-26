@@ -41,35 +41,6 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
         <h1 ><small style="color:#2D6D8B">A faster way to search for jobs</small></h1>
         <button type="button" class="btn btn-warning btn-lg" onclick="startTour()">Begin tour</button>
     </div>
-    <br />
-    <br />
-    <div class="container">
-        <form action="" method="post" class="form-group">
-            <div class="col-md-6 col-md-offset-3">
-                <div class="col-md-5">
-                    <input type="text" name="username" class="form-control" placeholder="Username" />
-                </div>
-
-                <div class="col-md-5">
-                    <div class="row">
-                        <input type="text" name="password" class="form-control" placeholder="Password"  />
-                    </div>
-                    <div class="row">
-                        <label class="checkbox-inline">
-                            <input type="checkbox" name="remember">Remember me
-                        </label>
-
-                    </div>
-                </div>
-
-                <div class="col-md-2 pull-right">
-                    <button type="submit" class="btn btn-success" id="stepLogin">Let's start!</button> <br/>
-                </div>
-            </div>
-        </form>
-    </div>
-
-
 
 </div>
 
@@ -88,13 +59,13 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
 
     <div class="navbar-collapse collapse" id="collapsedNav">
         <ul class="nav navbar-nav">
-            <li><a href="/jobInquiry">Job Inquiry & Shortlist</a></li>
+            <li><a href="/jobInquiry" id="stepJobs">Job Inquiry & Shortlist</a></li>
             <li><a href="/analyticsExport">Analytics & Downloads</a></li>
             <li><a href="/feedback">Feedback|Bugs</a></li>
 
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="/about">About</a></li>
+            <li><a href="/docs">Docs</a></li>
             </ul>
     </div>
     </ul>
@@ -111,7 +82,8 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
             <h4>Current JobMine Search</h4>
             <p>Imagine you were a .NET developer who wanted to apply to all jobs that require .NET knowledge.
                 <b>How would you go about finding all .NET jobs?</b>
-                Many job titles do not contain the words “.NET” and clicking on every job in Job Inquiry is likely not ideal (learned this the hard way, it was not pretty)
+                Many job titles do not contain the words “.NET” and clicking on every job in Job Inquiry is likely not ideal (learned this the hard way, it was not pretty)i.
+
             </p>
         </div>
         <div class="col-sm-2 hidden-xs">
@@ -125,8 +97,9 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
         <div class="col-sm-5">
             <h4 style="color: #2D6D8B">JobMine EZSearch</h4>
 
-            <p><b>We shouldn’t have to spend so much time looking for jobs when that time can be invested in writing applications for those jobs.</b>
-                Using JobMine EZSearch, we can easily find all jobs that require .NET knowledge by typing in “.NET” in the keywords search bar.
+            <p>EZSearch is like a supplement for a workout program. It isn't necessary, but it does help you save time searching for jobs.
+                <b>Using JobMine EZSearch, we can easily find all jobs that require .NET knowledge by typing in “.NET” in the keywords search bar.</b>
+
             </p>
         </div>
         <div class="row">
@@ -179,7 +152,7 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
                 <br />     <br />
                 <span class="lead">Fast and Functional</span>
                 <br />
-                Once JobMine EZSearch has prepared the database, you can instantaneously* search through 3000+ jobs and view jobs without waiting for page loads
+                Once JobMine EZSearch has finished setting up the local database with all jobs, you can instantaneously* search through 3000+ jobs and view jobs without waiting for page loads
             </div>
 
             <div class="visible-xs-block">
@@ -220,7 +193,7 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
 
                 <h4>How do I create my own SQL queries?</h4>
                 SQL Search automatically selects all columns from the table storing the jobs and you can simply type in the WHERE clause to find your queries
-                (eg, location = ‘Toronto’ OR summary LIKE ‘%game%’). You can also press the ? button next to the SQL Search textbox for help on writing SQL queries
+                (eg, location = ‘Toronto’ OR summary LIKE ‘%game%’). You can also learn how to make SQL queries on the Docs page.
             </div>
 
             <div class="col-sm-6">
@@ -234,7 +207,7 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
             <div class="col-sm-6">
                 <h4>I have ideas for improvements and found bugs. Who do I contact?</h4>
                 That’s great! You can fork the repository from <a href="https://github.com/NanoBreeze/JobMine-EZSearch">https://github.com/NanoBreeze/JobMine-EZSearch</a>
-                and contribute to the project! You can also send your ideas with this form:
+                and contribute to the project! You can also send your ideas using the feedback form in the Feedback|Bugs section of the menu.
             </div>
 
 

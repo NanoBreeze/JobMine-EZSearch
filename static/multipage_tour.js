@@ -1,8 +1,21 @@
+/*This file is part of JobMine EZSearch.
+
+JobMine EZSearch is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+JobMine EZSearch is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.*/
 
 var tour;
 
 $(function() {
-alert('ehy');
   // Instance the tour
 tour = new Tour({
   steps: [
@@ -16,7 +29,6 @@ tour = new Tour({
     path: "/jobInquiry",
     element: "#summary",
     title: " Search by keywords",
-    placement: 'top',
     content: "Search by specific words in jobs' summary. eg, Searching for 'game' will return a list of jobs that contains 'game', which means that many of them would be gaming companies." +
      " Please be aware that there can be false positives. We are working on improving the accuracy of the search engine."
   },
@@ -52,21 +64,21 @@ tour = new Tour({
     path: "/analyticsExport",
     element: "#stepDownloads",
     title: "Download all jobs",
-    placement: 'left',
+    placement: 'top',
     content: "In addition to a local database, you can also download formated files containing all jobs."
       },
       {
     path: "/feedback",
     element: "#stepContribute",
     title: "Open source",
-    placement: 'left',
+    placement: 'bottom',
     content: "You can help make JobMine EZSearch a more robust system!"
       },
       {
     path: "/",
-    element: "#stepLogin",
+    element: "#stepJobs",
     title: "This is the end of our tour",
-    content: "Type in your user ID and password (will be store in local database) so we can get the jobs for you and use the shortlist feature."
+    content: "We hope JobMine EZSearch can assist you in this term's co-op search"
       }
 ],
 
