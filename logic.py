@@ -22,7 +22,7 @@ import csv
 import json
 from bs4 import BeautifulSoup
 
-
+sessionNumber = "1169"
 
 class Analytics:
     """Handles tasks related to analytics. Used by Main.py analytics_export()."""
@@ -244,12 +244,12 @@ class Shortlist:
             if (short_list_job_identifier == job_identifier):
                 print('found a match!')
                 #delete the job on the shortlist that matches the same id as the selected job
-                paramsForDeleteShortListJob = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_STUJOBLST$delete$' + str(i) + '$$0'}
+                paramsForDeleteShortListJob = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber,'ICAction':'UW_CO_STUJOBLST$delete$' + str(i) + '$$0'}
                 m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL", paramsForDeleteShortListJob)
 
                 print('finished deleting and about to save')
 
-                paramsForSave = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'#ICSave'}
+                paramsForSave = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber,'ICAction':'#ICSave'}
 
                 m = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOB_SLIST.GBL ", paramsForSave)
 
@@ -291,7 +291,7 @@ class Shortlist:
         #search for the job
 
         paramsForSearch = {
-        'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165',
+        'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber,
         'ICAction':'UW_CO_JOBSRCHDW_UW_CO_DW_SRCHBTN',
         'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=',
         'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': str(apply),
@@ -313,7 +313,7 @@ class Shortlist:
 
             #add to short list
             print('about to add to short list')
-            paramsForShortList = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_SLIST_HL$0',
+            paramsForShortList = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber,'ICAction':'UW_CO_SLIST_HL$0',
                             'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_EMPLYR_NAME': str(employer_name),
                             'UW_CO_JOBSRCH_UW_CO_JOB_TITLE' : str(job_title)}
 
@@ -512,7 +512,7 @@ def updateJobs():
 def examineJobStatus(job_status, view_all, database, session):
     #empty the jot title and employer name in case previous operation had been a search
     paramsForSearch = {
-    'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165',
+    'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber,
     'UW_CO_JOBSRCH_UW_CO_ADV_DISCP1' : '',
     'ICAction':'UW_CO_JOBSRCHDW_UW_CO_DW_SRCHBTN',
     'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=',
@@ -526,7 +526,7 @@ def examineJobStatus(job_status, view_all, database, session):
     try:
         #if view_all has already been pressed, there will always be 100 jobs max to show and we don't want to press it again. Thus, second time this function is called, the caller ensures that view_all is False
         if (view_all):
-            paramsForSearch = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_JOBRES_VW$hviewall$0',
+            paramsForSearch = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber,'ICAction':'UW_CO_JOBRES_VW$hviewall$0',
                                 'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': job_status}
             s = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL", paramsForSearch)
         print(' posted to View 100')
@@ -579,7 +579,7 @@ def examineJobStatus(job_status, view_all, database, session):
                                             new_job['summary'], new_job['apply'], new_job['last_day_to_apply']))
 
         # going to the next section
-        paramsForSearch = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165', 'UW_CO_JOBSRCH_UW_CO_ADV_DISCP1' : '', 'ICAction':'UW_CO_JOBRES_VW$fdown$0',
+        paramsForSearch = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber, 'UW_CO_JOBSRCH_UW_CO_ADV_DISCP1' : '', 'ICAction':'UW_CO_JOBRES_VW$fdown$0',
                             'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': job_status}
 
         #'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': 'POST'

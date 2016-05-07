@@ -50,8 +50,10 @@ def getJobs(job_status,view_all):
 
     #==================get first page of all jobs for the given job_status
     paramsForSearch = {
-    'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165',
+    'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber,
     'UW_CO_JOBSRCH_UW_CO_ADV_DISCP1' : '',
+    'UW_CO_JOBSRCH_UW_CO_ADV_DISCP2' : '',
+    'UW_CO_JOBSRCH_UW_CO_ADV_DISCP3' : '',
     'ICAction':'UW_CO_JOBSRCHDW_UW_CO_DW_SRCHBTN',
     'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=',
     'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': job_status
@@ -64,7 +66,7 @@ def getJobs(job_status,view_all):
     try:
         #if view_all has already been pressed, there will always be 100 jobs max to show and we don't want to press it again. Thus, second time this function is called, the caller ensures that view_all is False
         if (view_all):
-            paramsForSearch = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165','ICAction':'UW_CO_JOBRES_VW$hviewall$0',
+            paramsForSearch = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber,'ICAction':'UW_CO_JOBRES_VW$hviewall$0',
                                 'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': job_status}
             s = session.post("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL", paramsForSearch)
         print(' posted to View 100')
@@ -137,7 +139,7 @@ def getJobs(job_status,view_all):
             print("================================================================================================")
 
         # going to the next section
-        paramsForSearch = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION':'1165', 'UW_CO_JOBSRCH_UW_CO_ADV_DISCP1' : '', 'ICAction':'UW_CO_JOBRES_VW$fdown$0',
+        paramsForSearch = { 'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber, 'UW_CO_JOBSRCH_UW_CO_ADV_DISCP1' : '', 'ICAction':'UW_CO_JOBRES_VW$fdown$0',
                             'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=', 'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': job_status}
 
         #'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': 'POST'
@@ -145,7 +147,7 @@ def getJobs(job_status,view_all):
 
 
 
-
+sessionNumber = "1169"
 
 #make database to store jobs
 initialize_database()
@@ -171,6 +173,7 @@ s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd
 s = session.get("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL?pslnkid=UW_CO_JOBSRCH_LINK&amp;FolderPath=PORTAL_ROOT_OBJECT.UW_CO_JOBSRCH_LINK&amp;IsFolder=false&amp;IgnoreParamTempl=FolderPath%2cIsFolder&amp;PortalActualURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentProvider=WORK&amp;PortalCRefLabel=Job%20Inquiry&amp;PortalRegistryName=EMPLOYEE&amp;PortalServletURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsp%2fES%2f&amp;PortalURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2f&amp;PortalHostNode=WORK&amp;NoCrumbs=yes&amp;PortalKeyStruct=yes")
 
 getJobs('APPR', True)
+getJobs('CANC', False)
+
 getJobs('POST', False)
 getJobs('APPA', False)
-getJobs('CANC', False)
