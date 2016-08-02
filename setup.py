@@ -18,6 +18,9 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
 import requests
 from bs4 import BeautifulSoup
 import sqlite3
+import cryptography
+
+import db
 
 def initialize_database():
     """Initializes jobs.db"""
@@ -35,10 +38,14 @@ def prompt_credentials():
     userid = input("Please enter your userid: ")
     pwd = input("Please enter your password: ")
 
+    #encrpyt the password
+    encrpyted_pwd = cryptography.encrpyt(pwd)
+    print('The encrypted password is: ' + str(encrpyted_pwd))
+
     connection=sqlite3.connect("jobs.db")
     c = connection.cursor()
     c.execute("INSERT INTO Miscellaneous(userid, pwd, language_preference) VALUES(?,?,?)",
-                                         (userid, pwd, "C,C++,.NET,C#,Java,Android,Linux,Apache,SQL,Ruby,Python,Javascript,ASP,MATLAB,iOS, Node, ALM, Perl, PHP, AutoCAD, PCB"))
+                                         (userid, encrpyted_pwd, "C,C++,.NET,C#,Java,Android,Linux,Apache,SQL,Ruby,Python,Javascript,ASP,MATLAB,iOS, Node, ALM, Perl, PHP, AutoCAD, PCB"))
     connection.commit()
     connection.close()
 
@@ -159,6 +166,11 @@ myfile.close()
 
 
 credentials = prompt_credentials()
+
+
+print('getting credentials now...')
+print(db.get_credentials())
+
 
 connection=sqlite3.connect("jobs.db")
 c = connection.cursor()

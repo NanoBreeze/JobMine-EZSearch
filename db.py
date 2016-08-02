@@ -16,6 +16,7 @@ along with JobMine EZSearch.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import sqlite3
+import cryptography
 
 
 def get_search_data(query):
@@ -220,7 +221,13 @@ def get_credentials():
     connection=sqlite3.connect("jobs.db")
     cur = connection.execute("SELECT userid, pwd  FROM Miscellaneous").fetchone()
 
-    credentials = [cur[0], cur[1]]
+    # print('get_credentials. The encrpyted password is: ' + str(cur[1]))
+    decrpyted_pwd = cryptography.decrpyt_password(cur[1])
+
+    # print('get_credentials. The decrpyted password is: ' + str(decrpyted_pwd))
+
+    credentials = [cur[0], decrpyted_pwd]
+
 
     connection.close()
 
