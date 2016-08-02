@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../JobMin_EZSearch/.idea/JobMin_EZSearch.iml" filepath="$PROJECT_DIR$/../JobMin_EZSearch/.idea/JobMin_EZSearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/JobMine-EZSearch.iml" filepath="$PROJECT_DIR$/.idea/JobMine-EZSearch.iml" />
     </modules>
   </component>

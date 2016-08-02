@@ -114,6 +114,7 @@ class Download:
         is_successful = self.__write_txt(jobs)
 
         return is_successful
+
     def __write_txt(self, jobs):
         """Makes the TXT file and writes to it with job data. Returns True if writing to a csv file was successful, otherwise returns false."""
         try:
@@ -202,6 +203,7 @@ class Download:
 
         except:
             return False
+
 
 class Shortlist:
 
