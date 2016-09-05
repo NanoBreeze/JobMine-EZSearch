@@ -102,7 +102,7 @@ def create_word_document():
         title = document.add_paragraph(job[1], style='Title')
         title.alignment = 1
 
-        employer_name = document.add_paragraph(job[2], style='Subtitle')
+        employer_name = document.add_heading(job[2], level=1)
         employer_name.alignment = 1
 
         add_line('Location', job[4])
@@ -113,12 +113,12 @@ def create_word_document():
 
 
         if (len(job[10]) > 10): #show Comments header only if the job contains comments
-            document.add_heading('Comments', level=1)
+            document.add_heading('Comments', level=2)
             document.add_paragraph(job[10])
 
         # document.add_paragraph('\n\n\n\n\n\n\n')
 
-        document.add_heading('Summary', level=1)
+        document.add_heading('Summary', level=2)
         #every time a <br /> occurs, add a linebreak to the current document
         print('The type of job[11] is: ' + str(type(job[11])))
         summary = job[11].replace('<br />', '\n').replace('&#039;', "'").replace('&nbsp;', ' ')

@@ -22,5 +22,7 @@ pip.main(['install',  'requests'])
 pip.main(['install', 'bs4'])
 pip.main(['install', 'flask'])
 pip.main(['install', 'pycrypto'])
+pip.main(['install', 'python-docx'])
+
 
 import setup
