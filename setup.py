@@ -58,9 +58,15 @@ def getJobs(job_status,view_all):
     #==================get first page of all jobs for the given job_status
     paramsForSearch = {
     'UW_CO_JOBSRCH_UW_CO_WT_SESSION': sessionNumber,
+    'UW_CO_JOBSRCH_UW_CO_EMPLYR_NAME' : '',
+    'UW_CO_JOBSRCH_UW_CO_JOB_TITLE' : '',
+    'UW_CO_JOBSRCH_UW_CO_LOCATION' : '',
     'UW_CO_JOBSRCH_UW_CO_ADV_DISCP1' : '',
     'UW_CO_JOBSRCH_UW_CO_ADV_DISCP2' : '',
     'UW_CO_JOBSRCH_UW_CO_ADV_DISCP3' : '',
+    'UW_CO_JOBSRCH_UW_CO_COOP_SR$chk' : 'Y',
+    'UW_CO_JOBSRCH_UW_CO_COOP_INT$chk' : 'Y',
+    'UW_CO_JOBSRCH_UW_CO_COOP_JR$chk' : 'Y',
     'ICAction':'UW_CO_JOBSRCHDW_UW_CO_DW_SRCHBTN',
     'ICSID':'HCQMdvPKP9qJwk2PhhqrkjaIevBaXGrrkxYfuBnMw9k=',
     'UW_CO_JOBSRCH_UW_CO_JS_JOBSTATUS': job_status
@@ -184,8 +190,24 @@ s = session.post('https://jobmine.ccol.uwaterloo.ca/psp/ES/?cmd=login&languageCd
 #=================go to Job Inquiry, the get method must exist before using a post
 s = session.get("https://jobmine.ccol.uwaterloo.ca/psc/ES/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBSRCH.GBL?pslnkid=UW_CO_JOBSRCH_LINK&amp;FolderPath=PORTAL_ROOT_OBJECT.UW_CO_JOBSRCH_LINK&amp;IsFolder=false&amp;IgnoreParamTempl=FolderPath%2cIsFolder&amp;PortalActualURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentURL=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2fEMPLOYEE%2fWORK%2fc%2fUW_CO_STUDENTS.UW_CO_JOBSRCH.GBL%3fpslnkid%3dUW_CO_JOBSRCH_LINK&amp;PortalContentProvider=WORK&amp;PortalCRefLabel=Job%20Inquiry&amp;PortalRegistryName=EMPLOYEE&amp;PortalServletURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsp%2fES%2f&amp;PortalURI=https%3a%2f%2fjobmine.ccol.uwaterloo.ca%2fpsc%2fES%2f&amp;PortalHostNode=WORK&amp;NoCrumbs=yes&amp;PortalKeyStruct=yes")
 
-getJobs('APPR', True)
-getJobs('CANC', False)
+try:
+    getJobs('APPR', True)
+except:
+    print("An error occured with getJobs('APPR', True). Maybe there are no available jobs in APPR. Getting CANC jobs now.")
 
-getJobs('POST', False)
-getJobs('APPA', False)
+try:
+    getJobs('CANC', False)
+except:
+    print("An error occured with getJobs('CANC', False). Maybe there are no available jobs in CANC. Getting POST jobs now.")
+
+try:
+    getJobs('POST', False)
+except:
+    print("An error occured with getJobs('POST', False). Maybe there are no available jobs in POST. Getting APPA jobs now.")
+
+try:
+    getJobs('APPA', False)
+except:
+    print("An error occured with getJobs('APPA', False). Maybe there are no available jobs in APPA")
+
+
