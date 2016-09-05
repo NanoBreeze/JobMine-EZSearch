@@ -160,6 +160,8 @@ def getJobs(job_status,view_all):
 
 
 
+
+
 sessionNumber = "1169"
 
 #make database to store jobs
@@ -209,5 +211,4 @@ try:
     getJobs('APPA', False)
 except:
     print("An error occured with getJobs('APPA', False). Maybe there are no available jobs in APPA")
-
 
