@@ -41,7 +41,7 @@ def get_csv_json_text_data():
     """Returns all data of every job in database. Used to make csv, json, and text files."""
 
     connection=sqlite3.connect("jobs.db")
-    cur = connection.execute('SELECT * FROM AllJobs')
+    cur = connection.execute("SELECT * FROM AllJobs")
     jobs = []
     for row in cur.fetchall():
         '''
